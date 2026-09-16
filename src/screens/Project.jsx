@@ -2,6 +2,7 @@ import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { Link, Navigate, useParams } from 'react-router-dom';
 import gsap from 'gsap';
 import { OrbitStage } from '../components/OrbitStage';
+import { SplatStage } from '../components/SplatStage';
 import { VIEWS, getProject, longDate, monthOf, yearOf, viewsOf } from '../data/projects';
 import { srcAt, widthFor } from '../lib/images';
 import logo from '../assets/avhad-logo.svg';
@@ -28,25 +29,16 @@ function ProjectView({ project }) {
   const activeView = views.some((v) => v.key === view) ? view : views[0]?.key;
   const photos = views.find((v) => v.key === activeView)?.photos ?? [];
 
-  const orbit = capture.orbit;
-  const showOrbit = mode === 'orbit' && !!orbit;
+  const { orbit, splat } = capture;
+  // A capture may be missing its orbit or its 3D scene; the stills are always there.
+  const stage = mode === 'views' ? 'views' : mode === 'orbit' && orbit ? 'orbit' : mode === 'splat' && splat ? 'splat' : 'missing';
 
   return (
     <main className="relative h-dvh w-full overflow-clip bg-navy text-paper">
-      {showOrbit ? <OrbitStage orbit={orbit} /> : <Views photos={photos} onOpen={setOpen} dark={mode === 'orbit'} />}
-
-      {mode === 'orbit' && !orbit && (
-        <div className="absolute inset-0 grid place-items-center px-6">
-          <div className="max-w-sm text-center">
-            <p className="label text-paper/60">{longDate(capture.date)}</p>
-            <h2 className="mt-2 text-hero font-semibold leading-tight">Orbit arriving with the next capture</h2>
-            <p className="mt-2 text-label text-paper/70">The stills from this visit are ready now.</p>
-            <button type="button" onClick={() => setMode('views')} className="label mt-5 rounded-full bg-paper px-5 py-2.5 text-navy transition hover:bg-paper/85">
-              Browse views
-            </button>
-          </div>
-        </div>
-      )}
+      {stage === 'orbit' && <OrbitStage orbit={orbit} />}
+      {stage === 'splat' && <SplatStage splat={splat} />}
+      {stage === 'views' && <Views photos={photos} onOpen={setOpen} />}
+      {stage === 'missing' && <Missing mode={mode} date={capture.date} onViews={() => setMode('views')} />}
 
       {/* header */}
       <header className="pointer-events-none absolute inset-x-0 top-0 z-30 flex items-start justify-between gap-4 p-4 md:p-6 3xl:p-8">
@@ -69,12 +61,12 @@ function ProjectView({ project }) {
       {/* on a phone this sits below the header rather than colliding with the name */}
       <div className="absolute left-1/2 top-20 z-30 -translate-x-1/2 md:top-6">
         <div className="flex gap-1 rounded-full bg-navy/55 p-1 ring-1 ring-paper/25 backdrop-blur-md">
-          {[['orbit', 'Orbit'], ['views', 'Views']].map(([key, text]) => (
+          {[['orbit', 'Orbit'], ['splat', '3D Splat'], ['views', 'Views']].map(([key, text]) => (
             <button
               key={key}
               type="button"
               onClick={() => setMode(key)}
-              className={`label rounded-full px-4 py-2 transition ${mode === key ? 'bg-paper text-navy' : 'text-paper/75 hover:text-paper'}`}
+              className={`label whitespace-nowrap rounded-full px-3.5 py-2 transition md:px-4 ${mode === key ? 'bg-paper text-navy' : 'text-paper/75 hover:text-paper'}`}
             >
               {text}
             </button>
@@ -110,6 +102,27 @@ function ProjectView({ project }) {
 
       {open !== null && <Viewer photos={photos} index={open} onIndex={setOpen} onClose={() => setOpen(null)} />}
     </main>
+  );
+}
+
+// Shown when this capture has no orbit footage, or no 3D scene built from it yet.
+function Missing({ mode, date, onViews }) {
+  const copy = {
+    orbit: ['Orbit arriving with the next capture', 'The stills from this visit are ready now.'],
+    splat: ['3D scene not built for this capture', 'It is reconstructed from the orbit footage, so it follows once that is flown.'],
+  }[mode] ?? ['Nothing here yet', ''];
+
+  return (
+    <div className="absolute inset-0 grid place-items-center px-6">
+      <div className="max-w-sm text-center">
+        <p className="label text-paper/60">{longDate(date)}</p>
+        <h2 className="mt-2 text-hero font-semibold leading-tight">{copy[0]}</h2>
+        <p className="mt-2 text-label text-paper/70">{copy[1]}</p>
+        <button type="button" onClick={onViews} className="label mt-5 rounded-full bg-paper px-5 py-2.5 text-navy transition hover:bg-paper/85">
+          Browse views
+        </button>
+      </div>
+    </div>
   );
 }
 

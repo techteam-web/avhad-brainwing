@@ -12,7 +12,9 @@ const URL = process.env.URL ?? 'http://localhost:5190';
 const OUT = process.env.OUT ?? '.cache/shots';
 await mkdir(OUT, { recursive: true });
 
-const browser = await chromium.launch();
+// HEADED=1 runs a real window on the real GPU: headless Chromium falls back to software
+// WebGL, which cannot render some things (Gaussian splats among them).
+const browser = await chromium.launch({ headless: !process.env.HEADED });
 const errors = [];
 
 for (const job of JSON.parse(process.argv[2])) {
