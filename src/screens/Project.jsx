@@ -48,11 +48,6 @@ function ProjectView({ project }) {
         </div>
       )}
 
-      {/* scrims — the chrome has to stay readable over a bright aerial */}
-      <div className="pointer-events-none absolute inset-x-0 top-0 z-20 h-32 bg-linear-to-b from-navy/70 to-transparent" />
-      <div className="pointer-events-none absolute inset-y-0 right-0 z-20 w-56 bg-linear-to-l from-navy/60 to-transparent max-md:hidden" />
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-28 bg-linear-to-t from-navy/70 to-transparent" />
-
       {/* header */}
       <header className="pointer-events-none absolute inset-x-0 top-0 z-30 flex items-start justify-between gap-4 p-4 md:p-6 3xl:p-8">
         <div className="flex items-center gap-3">
@@ -123,7 +118,9 @@ function ProjectView({ project }) {
 function Timeline({ captures, date, onPick }) {
   return (
     <nav className="absolute z-30 max-md:inset-x-0 max-md:bottom-20 max-md:flex max-md:justify-center md:right-6 md:top-1/2 md:-translate-y-1/2 3xl:right-10">
-      <ul className="flex gap-2 rounded-full bg-navy/45 px-3 py-2 ring-1 ring-paper/20 backdrop-blur-md md:flex-col md:items-end md:gap-5 md:bg-transparent md:px-0 md:py-0 md:ring-0 md:backdrop-blur-none">
+      {/* a pill, like the other controls — it keeps the dates legible over a bright frame
+          without a gradient creeping in around the edge of the page */}
+      <ul className="flex gap-2 rounded-full bg-navy/50 px-3 py-2 ring-1 ring-paper/20 backdrop-blur-md md:flex-col md:items-end md:gap-4 md:rounded-2xl md:px-4 md:py-4">
         {captures.map((c) => {
           const active = c.date === date;
           return (
@@ -134,7 +131,11 @@ function Timeline({ captures, date, onPick }) {
                 onClick={() => onPick(c.date)}
                 className={`group flex items-center gap-3 transition ${c.upcoming ? 'cursor-default' : ''}`}
               >
-                <span className={`label text-right leading-none transition max-md:hidden ${active ? 'text-paper' : c.upcoming ? 'text-paper/40' : 'text-paper/70 group-hover:text-paper'}`}>
+                <span
+                  className={`label text-right leading-none transition max-md:hidden ${
+                    active ? 'text-paper' : c.upcoming ? 'text-paper/50' : 'text-paper/75 group-hover:text-paper'
+                  }`}
+                >
                   {monthOf(c.date)} <span className="opacity-60">{yearOf(c.date).slice(2)}</span>
                 </span>
                 <span className={`relative grid place-items-center transition ${active ? 'size-3.5' : 'size-2.5'}`}>
@@ -149,7 +150,7 @@ function Timeline({ captures, date, onPick }) {
           );
         })}
       </ul>
-      <p className="label absolute right-0 top-full mt-3 hidden whitespace-nowrap text-paper/45 md:block">Capture date</p>
+      <p className="label absolute right-1 top-full mt-2.5 hidden whitespace-nowrap text-paper/60 [text-shadow:0_1px_8px_rgba(18,21,31,.85)] md:block">Capture date</p>
     </nav>
   );
 }
@@ -247,7 +248,7 @@ function Views({ photos, onOpen }) {
           ))}
         </div>
       </div>
-      <p className="label pointer-events-none absolute inset-x-0 bottom-8 text-center text-paper/55">Drag to browse · tap to enlarge</p>
+      <p className="label pointer-events-none absolute inset-x-0 bottom-8 text-center text-paper/65 [text-shadow:0_1px_8px_rgba(18,21,31,.8)]">Drag to browse · tap to enlarge</p>
     </div>
   );
 }
