@@ -10,7 +10,7 @@ import { coverRect, preload, srcAt, widthFor } from '../lib/images';
 // that is, so a drag never shows a hole.
 
 const WIDTHS = [640, 1280];
-const SENSITIVITY = 1.15; // screen widths per full turn
+const SENSITIVITY = 1; // one drag across the full screen width = one full turn
 
 export function OrbitStage({ orbit, onAngle }) {
   const canvas = useRef(null);
@@ -24,7 +24,9 @@ export function OrbitStage({ orbit, onAngle }) {
     const s = state.current;
     const total = orbit.frames;
     const width = widthFor(innerWidth, WIDTHS);
-    const url = (i) => srcAt({ src: `${orbit.src}/${String(((i % total) + total) % total).padStart(3, '0')}` }, width);
+    // The orbit has a first and a last frame; it does not wrap around.
+    const clamp = (v) => Math.min(Math.max(v, 0), total - 1);
+    const url = (i) => srcAt({ src: `${orbit.src}/${String(clamp(i)).padStart(3, '0')}` }, width);
     let alive = true;
     let raf = 0;
     let dpr = 1;
@@ -41,16 +43,14 @@ export function OrbitStage({ orbit, onAngle }) {
     // The nearest loaded frame, so there is always something to show.
     const nearest = (i) => {
       for (let d = 0; d < total; d++) {
-        for (const c of [i - d, i + d]) {
-          const k = ((c % total) + total) % total;
-          if (s.loaded.has(k)) return k;
-        }
+        if (i - d >= 0 && s.loaded.has(i - d)) return i - d;
+        if (i + d < total && s.loaded.has(i + d)) return i + d;
       }
       return -1;
     };
 
     const draw = () => {
-      const i = nearest(Math.round(s.frame) % total);
+      const i = nearest(clamp(Math.round(s.frame)));
       if (i < 0) return;
       const img = imgOf(i);
       if (!img) return;
@@ -62,7 +62,7 @@ export function OrbitStage({ orbit, onAngle }) {
     const elements = new Map();
     const imgOf = (i) => elements.get(i);
     const load = async (i) => {
-      const k = ((i % total) + total) % total;
+      const k = clamp(i);
       if (elements.has(k)) return;
       elements.set(k, null);
       const img = await preload(url(k));
@@ -70,7 +70,7 @@ export function OrbitStage({ orbit, onAngle }) {
       elements.set(k, img);
       s.loaded.add(k);
       setReady(s.loaded.size / total);
-      if (Math.round(s.frame) % total === k || s.loaded.size < 3) draw();
+      if (clamp(Math.round(s.frame)) === k || s.loaded.size < 3) draw();
     };
 
     (async () => {
@@ -85,18 +85,22 @@ export function OrbitStage({ orbit, onAngle }) {
         // release it only carries the throw's momentum before settling on a frame.
         if (Math.abs(s.velocity) > 0.02) {
           s.frame += s.velocity;
-          s.velocity *= 0.94;
+          s.velocity *= 0.85;
         } else {
           s.velocity = 0;
-          s.frame = Math.round(s.frame);
+          s.frame = clamp(Math.round(s.frame));
           draw();
-          onAngle?.(((Math.round(s.frame) % total) + total) % total, total);
+          onAngle?.(clamp(Math.round(s.frame)), total);
           raf = 0;
           return;
         }
       }
+      // Hitting either end stops the throw rather than bouncing or wrapping.
+      const held = clamp(s.frame);
+      if (held !== s.frame) s.velocity = 0;
+      s.frame = held;
       draw();
-      onAngle?.(((Math.round(s.frame) % total) + total) % total, total);
+      onAngle?.(Math.round(s.frame), total);
       raf = requestAnimationFrame(step);
     };
     const kick = () => {
@@ -118,8 +122,10 @@ export function OrbitStage({ orbit, onAngle }) {
       const perFrame = (innerWidth * SENSITIVITY) / total;
       const d = (e.clientX - last) / perFrame;
       last = e.clientX;
-      s.frame -= d; // drag left, the camera travels right around the building
-      s.velocity = -d;
+      s.frame = clamp(s.frame + d); // drag right to go on round; at the start, left does nothing
+      // Only a light glide after release: the drag itself should stay one-to-one with the
+      // hand, so a screen-width drag really is one turn.
+      s.velocity = d * 0.4;
     };
     const onUp = (e) => {
       if (!s.dragging) return;
@@ -130,14 +136,14 @@ export function OrbitStage({ orbit, onAngle }) {
     };
     const onWheel = (e) => {
       const d = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
-      s.frame += d * 0.03;
+      s.frame = clamp(s.frame + d * 0.03);
       s.velocity = 0;
       setHint(false);
       kick();
     };
     const onKey = (e) => {
       if (!['ArrowLeft', 'ArrowRight'].includes(e.key)) return;
-      s.frame += e.key === 'ArrowRight' ? 1 : -1;
+      s.frame = clamp(s.frame + (e.key === 'ArrowRight' ? 1 : -1));
       setHint(false);
       kick();
     };
@@ -169,7 +175,7 @@ export function OrbitStage({ orbit, onAngle }) {
   const scrub = (e) => {
     const rect = e.currentTarget.getBoundingClientRect();
     const t = Math.min(Math.max((e.clientX - rect.left) / rect.width, 0), 1);
-    state.current.frame = t * orbit.frames;
+    state.current.frame = t * (orbit.frames - 1);
     state.current.velocity = 0;
     setHint(false);
   };
@@ -195,7 +201,7 @@ export function OrbitStage({ orbit, onAngle }) {
         <ScrubBar frames={orbit.frames} state={state} />
         {hint && (
           <p className="label mt-3 text-center text-paper/80 drop-shadow-[0_1px_8px_rgba(18,21,31,.7)]">
-            <span className="animate-pulse">Drag left or right to orbit</span>
+            <span className="animate-pulse">Drag right to orbit the site</span>
           </p>
         )}
       </div>
@@ -211,7 +217,7 @@ function ScrubBar({ frames, state }) {
   useEffect(() => {
     let raf = 0;
     const tick = () => {
-      const t = ((((state.current.frame % frames) + frames) % frames) / frames) * 100;
+      const t = (Math.min(Math.max(state.current.frame, 0), frames - 1) / (frames - 1)) * 100;
       if (fill.current) fill.current.style.width = `${t}%`;
       if (knob.current) knob.current.style.left = `${t}%`;
       raf = requestAnimationFrame(tick);
