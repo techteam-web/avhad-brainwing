@@ -14,7 +14,7 @@ const SENSITIVITY = 1.15; // screen widths per full turn
 
 export function OrbitStage({ orbit, onAngle }) {
   const canvas = useRef(null);
-  const state = useRef({ frame: 0, velocity: 0, dragging: false, touched: false, loaded: new Set() });
+  const state = useRef({ frame: 0, velocity: 0, dragging: false, loaded: new Set() });
   const [ready, setReady] = useState(0); // 0..1, how much of the orbit has arrived
   const [hint, setHint] = useState(true);
 
@@ -81,11 +81,11 @@ export function OrbitStage({ orbit, onAngle }) {
     // ---------------------------------------------------------------- interaction
     const step = () => {
       if (!s.dragging) {
+        // Nothing moves on its own: the orbit sits still until it is dragged, and after a
+        // release it only carries the throw's momentum before settling on a frame.
         if (Math.abs(s.velocity) > 0.02) {
           s.frame += s.velocity;
           s.velocity *= 0.94;
-        } else if (!s.touched) {
-          s.frame += 0.12; // a slow drift until someone takes hold of it
         } else {
           s.velocity = 0;
           s.frame = Math.round(s.frame);
@@ -106,7 +106,6 @@ export function OrbitStage({ orbit, onAngle }) {
     let last = 0;
     const onDown = (e) => {
       s.dragging = true;
-      s.touched = true;
       s.velocity = 0;
       last = e.clientX;
       el.setPointerCapture(e.pointerId);
@@ -131,7 +130,6 @@ export function OrbitStage({ orbit, onAngle }) {
     };
     const onWheel = (e) => {
       const d = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
-      s.touched = true;
       s.frame += d * 0.03;
       s.velocity = 0;
       setHint(false);
@@ -139,7 +137,6 @@ export function OrbitStage({ orbit, onAngle }) {
     };
     const onKey = (e) => {
       if (!['ArrowLeft', 'ArrowRight'].includes(e.key)) return;
-      s.touched = true;
       s.frame += e.key === 'ArrowRight' ? 1 : -1;
       setHint(false);
       kick();
@@ -173,7 +170,6 @@ export function OrbitStage({ orbit, onAngle }) {
     const rect = e.currentTarget.getBoundingClientRect();
     const t = Math.min(Math.max((e.clientX - rect.left) / rect.width, 0), 1);
     state.current.frame = t * orbit.frames;
-    state.current.touched = true;
     state.current.velocity = 0;
     setHint(false);
   };
