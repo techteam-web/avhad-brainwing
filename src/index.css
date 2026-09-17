@@ -5,9 +5,9 @@
      Rose Gold PANTONE 4645 C #AC7C59
      Grey    Cool Gray 10 C   #616569
      Black                    #000000
-   Heading type is Archivo; sub-heads and body are Avenir (Medium and Light), which is
-   installed on every Apple device and falls back to Nunito Sans — the closest free
-   humanist geometric — everywhere else.
+   Heading type is Archivo — open, so it is shipped with the site. Sub-heads and body are
+   Avenir (Medium and Light), which is Linotype's: it is used where the device already has
+   it, and Nunito Sans, the nearest open humanist geometric, is shipped for the rest.
    The token names are unchanged from before, so every existing class keeps working; only
    the values moved onto the real palette. */
 

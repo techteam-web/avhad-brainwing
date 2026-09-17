@@ -95,6 +95,13 @@ function ProjectView({ project }) {
       {/* a brass hairline drawn across the change, in the direction of the tab */}
       <span ref={sweep} className="pointer-events-none absolute inset-y-0 left-0 z-40 w-px bg-brass opacity-0 shadow-[0_0_24px_6px_rgba(169,136,91,.35)]" />
 
+      {/* The orbit can turn to face a white rooftop, and the wordmark and Index vanish into
+          it. A shallow scrim along the top keeps the masthead readable on every frame. */}
+      <span
+        className="pointer-events-none absolute inset-x-0 top-0 z-20 h-[22vh]"
+        style={{ background: 'linear-gradient(to bottom, rgba(9,17,50,.72) 0%, rgba(9,17,50,.34) 42%, rgba(9,17,50,0) 100%)' }}
+      />
+
       {/* masthead */}
       <header className="pointer-events-none absolute inset-x-0 top-0 z-30 flex items-start justify-between gap-4 p-5 md:p-8 3xl:p-10">
         <div className="pointer-events-auto flex items-center gap-4">
