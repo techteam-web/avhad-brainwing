@@ -49,6 +49,9 @@ const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', '
 export const monthOf = (date) => MONTHS[Number(date.slice(5, 7)) - 1];
 export const yearOf = (date) => date.slice(0, 4);
 export const longDate = (date) => `${Number(date.slice(8, 10))} ${monthOf(date)} ${yearOf(date)}`;
+// The full month, for the masthead: a capture is a month's progress, not a day's.
+const FULL = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+export const monthYear = (date) => `${FULL[Number(date.slice(5, 7)) - 1]} ${yearOf(date)}`;
 
 // ONE photograph per compass point, not a pile of them — and the four sides are picked at
 // as near the same altitude as the capture allows, so switching between them reads as the
