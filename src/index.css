@@ -1,31 +1,37 @@
 @import 'tailwindcss';
 
-/* AVHAD — the look.
-   One typeface: Inter, the workhorse most of the web reads in, set large enough to
-   actually read. Warm paper ground with a surveyor's grid and a paper tooth under it, the
-   logo's navy as ink, one muted brass for anything live. */
+/* AVHAD — straight off the brand guidelines.
+     Blue    PANTONE 2766 C   #0F1B4D
+     Rose Gold PANTONE 4645 C #AC7C59
+     Grey    Cool Gray 10 C   #616569
+     Black                    #000000
+   Heading type is Archivo; sub-heads and body are Avenir (Medium and Light), which is
+   installed on every Apple device and falls back to Nunito Sans — the closest free
+   humanist geometric — everywhere else.
+   The token names are unchanged from before, so every existing class keeps working; only
+   the values moved onto the real palette. */
 
 @theme {
-  --color-ink: #10152b; /* deepest navy — text on paper, ground behind photographs */
-  --color-navy: #1b224e; /* straight off the logo */
-  --color-navy-soft: #2a3260;
+  --color-ink: #0f1b4d; /* the brand blue, used as the dark ground and as text */
+  --color-navy: #0f1b4d;
+  --color-navy-soft: #1c2a63;
+  --color-navy-deep: #091132;
 
-  --color-bone: #f3eee6; /* warm paper, never white */
-  --color-bone-dim: #ded7c9;
-  --color-mist: #8b91a6;
+  --color-bone: #f2f1ee; /* the light grey the guidelines set the logo on */
+  --color-bone-dim: #dedcd6;
+  --color-mist: #616569; /* Cool Gray 10 C */
 
-  --color-brass: #a9885b; /* the one accent */
-  --color-brass-lit: #c9a876;
+  --color-brass: #ac7c59; /* rose gold */
+  --color-brass-lit: #c89a73;
 
-  --font-display: 'Inter Variable', Inter, system-ui, -apple-system, sans-serif;
-  --font-sans: 'Inter Variable', Inter, system-ui, -apple-system, sans-serif;
+  --font-display: 'Archivo Variable', Archivo, system-ui, sans-serif;
+  --font-sans: 'Avenir Next', Avenir, 'Nunito Sans Variable', system-ui, sans-serif;
 
   /* The page never scrolls, so type keys off whichever of width or height runs out
-     first. Everything is a step larger than a marketing site would use, because this is
-     read across a desk and on a sales-office screen. */
-  --text-display: clamp(2.75rem, min(6.4vw, 11vh), 6.5rem);
-  --text-hero: clamp(2rem, min(4.2vw, 7.4vh), 4.25rem);
-  --text-title: clamp(1.25rem, min(1.7vw, 3vh), 2rem);
+     first, and keeps climbing on kiosk-sized displays. */
+  --text-display: clamp(2.75rem, min(6.8vw, 12vh), 7rem);
+  --text-hero: clamp(2rem, min(4.4vw, 7.6vh), 4.5rem);
+  --text-title: clamp(1.25rem, min(1.75vw, 3vh), 2.125rem);
   --text-body: clamp(0.9375rem, min(1.05vw, 1.85vh), 1.25rem);
   --text-label: clamp(0.8125rem, min(0.92vw, 1.6vh), 1.0625rem);
   --text-micro: clamp(0.75rem, min(0.8vw, 1.4vh), 0.9375rem);
@@ -55,22 +61,25 @@
   }
 
   body {
-    background: var(--color-bone);
-    color: var(--color-ink);
+    background: var(--color-ink);
+    color: var(--color-bone);
     font-family: var(--font-sans);
     font-size: var(--text-body);
-    line-height: 1.5;
+    font-weight: 300; /* Avenir Light is the body weight the guidelines set */
+    line-height: 1.55;
     -webkit-font-smoothing: antialiased;
     -webkit-tap-highlight-color: transparent;
   }
 
+  /* Headings are Archivo, and Archivo is a heavy, architectural grotesk — it carries the
+     brand far more than a light serif ever did. */
   h1,
   h2,
   h3 {
     font-family: var(--font-display);
-    font-weight: 600;
-    line-height: 1.04;
-    letter-spacing: -0.022em;
+    font-weight: 700;
+    line-height: 1.02;
+    letter-spacing: -0.028em;
     margin: 0;
   }
 
@@ -98,11 +107,11 @@
   }
 }
 
-/* Small caps-ish label — readable, not a whisper. */
+/* Letter-spaced caps for dates, compass points and captions — Avenir Medium. */
 @utility label {
   font-size: var(--text-label);
   font-weight: 500;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   font-variant-numeric: tabular-nums;
 }
@@ -110,29 +119,29 @@
 @utility label-micro {
   font-size: var(--text-micro);
   font-weight: 500;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
   font-variant-numeric: tabular-nums;
 }
 
-/* The ground the index sits on: a surveyor's grid, light falling from the top left, the
-   ink pooling bottom right. Flat colour alone reads as an empty browser window. */
-@utility paper-field {
-  background-color: var(--color-bone);
-  background-image:
-    radial-gradient(58% 48% at 10% 6%, rgba(255, 255, 255, 0.85), transparent 70%),
-    radial-gradient(55% 50% at 92% 96%, rgba(27, 34, 78, 0.08), transparent 74%),
-    repeating-linear-gradient(0deg, rgba(27, 34, 78, 0.05) 0 1px, transparent 1px 84px),
-    repeating-linear-gradient(90deg, rgba(27, 34, 78, 0.05) 0 1px, transparent 1px 84px);
-}
-
-/* A paper tooth over the whole thing, felt rather than seen. */
+/* A paper tooth over flat colour, felt rather than seen. */
 @utility grain-layer {
   position: absolute;
   inset: 0;
   pointer-events: none;
-  opacity: 0.05;
+  opacity: 0.045;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* The ground: brand blue, lit from the top left, deepening bottom right, over a faint
+   survey grid. The guidelines do exactly this on the business card and envelope. */
+@utility brand-field {
+  background-color: var(--color-ink);
+  background-image:
+    radial-gradient(65% 55% at 8% 4%, rgba(70, 92, 170, 0.32), transparent 70%),
+    radial-gradient(60% 55% at 95% 98%, rgba(4, 8, 26, 0.75), transparent 72%),
+    repeating-linear-gradient(0deg, rgba(242, 241, 238, 0.045) 0 1px, transparent 1px 88px),
+    repeating-linear-gradient(90deg, rgba(242, 241, 238, 0.045) 0 1px, transparent 1px 88px);
 }
 
 @utility rule-ink {

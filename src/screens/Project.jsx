@@ -5,7 +5,6 @@ import { Brainwing } from '../components/Brainwing';
 import { OrbitStage } from '../components/OrbitStage';
 import { getProject, longDate, monthOf, viewsOf, yearOf } from '../data/projects';
 import { srcAt, widthFor } from '../lib/images';
-import logo from '../assets/avhad-logo.svg';
 
 const STILL_WIDTHS = [640, 1280, 1920];
 const MODES = [
@@ -107,13 +106,20 @@ function ProjectView({ project }) {
             <span className="inline-block transition-transform duration-500 group-hover:-translate-x-1">←</span>
             <span className="max-mob:hidden">Index</span>
           </Link>
-          <span className="h-7 w-px rule-bone md:h-9" />
-          <img src={logo} alt="Avhad" className="h-10 w-auto brightness-0 invert drop-shadow-[0_1px_12px_rgba(16,21,43,.9)] md:h-12 3xl:h-14" />
+          {/* No group lockup here: the three-line mark turns to mush at header height, and
+              this page is the development's — its own wordmark carries the identity. */}
         </div>
 
-        <div className="text-right">
-          <h1 className="text-title font-semibold leading-none tracking-tight text-bone [text-shadow:0_1px_14px_rgba(16,21,43,.9)]">{project.name}</h1>
-          <p className="label mt-2 text-bone/80 [text-shadow:0_1px_10px_rgba(16,21,43,.9)]">{project.place}</p>
+        {/* the development is announced by its own wordmark, as the brand pack draws it */}
+        <div className="flex flex-col items-end">
+          <img
+            src={project.logo}
+            alt={project.name}
+            className={`h-auto drop-shadow-[0_2px_16px_rgba(9,17,50,.95)] ${
+              project.slug === 'homestead' ? 'w-[min(30vw,260px)] md:w-[min(18vw,280px)]' : 'w-[min(20vw,150px)] md:w-[min(10vw,160px)]'
+            }`}
+          />
+          <p className="label mt-2.5 text-bone/80 [text-shadow:0_1px_10px_rgba(16,21,43,.9)]">{project.place}</p>
         </div>
       </header>
 

@@ -3,10 +3,27 @@ import assets from './assets.json';
 // Everything about a project that is not an asset. The captures themselves — their dates,
 // the orbit, the 3D scene and the stills grouped by compass view — come from
 // assets.json, which scripts/ingest.mjs writes.
+// Each development has its own wordmark from the brand pack: Homestead's is set in gold,
+// Bayline's comes in white and gold-foil. `logo` is the one to use on the dark ground.
 const META = {
-  homestead: { name: 'Avhad Homestead', place: 'Mahim · Mumbai', blurb: 'Excavation and piling under way' },
-  bayline: { name: 'Avhad Bayline', place: 'Mahim · Mumbai', blurb: 'Piling grid taking shape' },
+  homestead: {
+    name: 'Avhad Homestead',
+    place: 'Mahim · Mumbai',
+    blurb: 'Excavation and piling under way',
+    logo: '/images/homestead-gold.png',
+    logoGold: '/images/homestead-gold.png',
+  },
+  bayline: {
+    name: 'Avhad Bayline Residences',
+    place: 'Mahim · Mumbai',
+    blurb: 'Piling grid taking shape',
+    logo: '/images/bayline-white.png',
+    logoGold: '/images/bayline-gold.png',
+  },
 };
+
+// From the brand guidelines.
+export const TAGLINE = 'Building Landmarks. Creating Legacies.';
 
 // The site is flown every quarter. These dates are already booked, and sit on the
 // timeline as upcoming until their folder arrives and ingest fills them in.
