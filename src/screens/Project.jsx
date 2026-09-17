@@ -100,7 +100,7 @@ function ProjectView({ project }) {
         <div className="pointer-events-auto flex items-center gap-4">
           <Link
             to="/"
-            className="label group flex items-center gap-2 text-bone transition [text-shadow:0_1px_10px_rgba(16,21,43,.9)] hover:text-brass-lit"
+            className="panel label group flex items-center gap-2.5 rounded-full px-5 py-2.5 text-brass-lit transition-colors duration-300 hover:bg-brass hover:text-navy-deep"
             aria-label="All developments"
           >
             <span className="inline-block transition-transform duration-500 group-hover:-translate-x-1">←</span>
@@ -123,29 +123,39 @@ function ProjectView({ project }) {
         </div>
       </header>
 
-      {/* the three stages — a hairline control, not a pill */}
-      {/* One cluster holds the stage switch and, in Views, the compass points beneath it.
-          A flat wash carries them over a white building — blurring the backdrop instead
-          just smears a grey block across the photograph. */}
-      <div className="absolute left-1/2 top-4 z-30 flex -translate-x-1/2 flex-col items-center rounded-2xl bg-ink/45 px-6 py-2.5 md:top-7 3xl:top-9">
-        <nav className="flex items-center gap-6 md:gap-9">
+      {/* One plate holds the stage switch and, in Views, the compass points beneath it.
+          Whichever is chosen is filled rose gold, so the control reads at a glance over
+          any frame of the orbit. */}
+      <div className="panel absolute left-1/2 top-4 z-30 flex -translate-x-1/2 flex-col items-stretch rounded-2xl p-1.5 md:top-7 3xl:top-9">
+        <nav className="flex items-stretch gap-1.5">
           {MODES.map((m) => (
-            <button key={m.key} type="button" onClick={() => go(m.key)} className="group relative pb-1.5">
-              <span className={`label transition-colors duration-300 ${mode === m.key ? 'text-bone' : 'text-bone/65 group-hover:text-bone/90'}`}>{m.label}</span>
-              <span className={`absolute inset-x-0 bottom-0 h-px origin-center transition-transform duration-500 ${mode === m.key ? 'scale-x-100 bg-brass' : 'scale-x-0 bg-bone/40'}`} />
+            <button
+              key={m.key}
+              type="button"
+              onClick={() => go(m.key)}
+              className={`label flex-1 rounded-xl px-6 py-2.5 transition-colors duration-300 md:px-9 ${
+                mode === m.key ? 'chip-on' : 'text-bone/75 hover:bg-bone/10 hover:text-bone'
+              }`}
+            >
+              {m.label}
             </button>
           ))}
         </nav>
 
         {stage === 'views' && (
           <>
-            <span className="mt-2 h-px w-full rule-bone" />
-            <div className="mt-2 flex gap-5 md:gap-7">
+            <span className="mx-2 mt-1.5 h-px bg-brass/30" />
+            <div className="mt-1.5 flex items-center gap-1">
               {views.map((v) => (
-                <button key={v.key} type="button" onClick={() => setView(v.key)} className="group">
-                  <span className={`label transition-colors duration-300 ${active?.key === v.key ? 'text-brass-lit' : 'text-bone/70 group-hover:text-bone/95'}`}>
-                    {v.label}
-                  </span>
+                <button
+                  key={v.key}
+                  type="button"
+                  onClick={() => setView(v.key)}
+                  className={`label-micro flex-1 rounded-lg px-3.5 py-2 transition-colors duration-300 md:px-4 ${
+                    active?.key === v.key ? 'chip-on' : 'text-bone/70 hover:bg-bone/10 hover:text-bone'
+                  }`}
+                >
+                  {v.label}
                 </button>
               ))}
             </div>
@@ -156,7 +166,7 @@ function ProjectView({ project }) {
       <Timeline captures={project.captures} date={date} onPick={setDate} />
 
       {stage === 'views' && active && (
-        <p className="label pointer-events-none absolute bottom-6 left-5 z-20 rounded-full bg-ink/50 px-4 py-2 text-bone md:bottom-8 md:left-8 3xl:left-10">
+        <p className="panel label pointer-events-none absolute bottom-6 left-5 z-20 rounded-full px-5 py-2.5 text-bone md:bottom-8 md:left-8 3xl:left-10">
           {active.label} elevation · {active.altitude} m · {longDate(capture.date)}
         </p>
       )}
@@ -210,7 +220,7 @@ function Missing({ date, onViews }) {
 function Timeline({ captures, date, onPick }) {
   return (
     <nav className="absolute z-30 max-md:inset-x-0 max-md:bottom-16 max-md:flex max-md:justify-center md:right-8 md:top-1/2 md:-translate-y-1/2 3xl:right-10">
-      <ul className="flex items-center gap-5 rounded-full bg-ink/45 px-4 py-2 md:flex-col md:items-end md:gap-5 md:rounded-2xl md:px-4 md:py-4">
+      <ul className="panel flex items-center gap-5 rounded-full px-5 py-2.5 md:flex-col md:items-end md:gap-5 md:rounded-2xl md:px-5 md:py-5">
         {captures.map((c) => {
           const on = c.date === date;
           return (
@@ -222,8 +232,8 @@ function Timeline({ captures, date, onPick }) {
                 className={`group flex items-center gap-3 ${c.upcoming ? 'cursor-default' : ''}`}
               >
                 <span
-                  className={`label whitespace-nowrap transition-colors duration-300 [text-shadow:0_1px_10px_rgba(16,21,43,.9)] max-md:hidden ${
-                    on ? 'text-bone' : c.upcoming ? 'text-bone/40' : 'text-bone/70 group-hover:text-bone/95'
+                  className={`label whitespace-nowrap transition-colors duration-300 max-md:hidden ${
+                    on ? 'text-brass-lit' : c.upcoming ? 'text-bone/35' : 'text-bone/70 group-hover:text-bone'
                   }`}
                 >
                   {monthOf(c.date)} {yearOf(c.date).slice(2)}

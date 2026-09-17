@@ -86,7 +86,12 @@ export function Landing() {
                   className="absolute inset-0 h-full w-full scale-105 object-cover transition-transform duration-[1800ms] ease-out group-hover:scale-100"
                 />
               )}
-              <span className="absolute inset-0 bg-linear-to-t from-ink via-ink/70 to-ink/15 transition-opacity duration-700 group-hover:opacity-90" />
+              {/* only as much scrim as the wordmark needs: solid along the foot, gone by
+                  halfway up, so the aerial itself is what you look at */}
+              <span
+                className="absolute inset-0 transition-opacity duration-700 group-hover:opacity-85"
+                style={{ background: 'linear-gradient(to top, rgba(9,17,50,.94) 0%, rgba(9,17,50,.8) 20%, rgba(15,27,77,.28) 44%, rgba(15,27,77,0) 72%)' }}
+              />
 
               <span className="relative flex h-full flex-col justify-end gap-3.5 p-7 md:p-9">
                 <img

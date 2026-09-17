@@ -151,3 +151,21 @@
 @utility rule-bone {
   background: color-mix(in srgb, var(--color-bone) 22%, transparent);
 }
+
+/* A control plate. Over a drone photograph, white type on nothing disappears the moment
+   the frame turns pale, so every control sits on solid brand navy inside a rose gold
+   hairline — no blur, which only smears a grey block across the picture. */
+@utility panel {
+  background: color-mix(in srgb, var(--color-navy-deep) 90%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-brass) 40%, transparent);
+  box-shadow:
+    0 14px 34px -14px rgba(4, 8, 26, 0.9),
+    inset 0 1px 0 color-mix(in srgb, var(--color-brass) 16%, transparent);
+}
+
+/* The chosen one inside a plate: rose gold, filled. */
+@utility chip-on {
+  background: var(--color-brass);
+  color: var(--color-navy-deep);
+  box-shadow: 0 0 22px -4px color-mix(in srgb, var(--color-brass) 65%, transparent);
+}
