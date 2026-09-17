@@ -225,7 +225,14 @@
   "bayline": [
     {
       "date": "2026-09-10",
-      "orbit": null,
+      "orbit": {
+        "frames": 96,
+        "src": "/assets/bayline/2026-09-10/orbit",
+        "width": 2560,
+        "height": 1440,
+        "duration": 101.12,
+        "lqip": "data:image/webp;base64,UklGRp4AAABXRUJQVlA4IJIAAAAQBACdASoUAAsAPu1iqU2ppaOiMAgBMB2JQBhQMYJcs3fQrbhoav9oAAD6h7MUdAEuLsYrgobDetK4bADmCZrNqPYsndKGgWqYf+spRk8IoU8j11N24X9Ba1LRdr7SKvJgAFNoA7lPY/rADtz4Ew/pkh/M5Zf9MKZTmrI9ApOB8cBc1UslVRSR3j6fMiqYoDmAAA=="
+      },
       "views": {
         "top": [
           {

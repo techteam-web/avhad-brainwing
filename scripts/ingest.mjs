@@ -3,6 +3,7 @@
 //   npm run assets            everything
 //   npm run assets -- orbit   only the orbit frames
 //   npm run assets -- stills  only the stills
+//   npm run assets -- orbit bayline   one project, one kind
 //
 // Two kinds of asset per capture:
 //   ORBIT — one drone orbit of the plot, cut into a numbered frame sequence. The page
@@ -41,7 +42,7 @@ const CAPTURES = [
     slug: 'bayline',
     date: '2026-09-10',
     dir: '/Users/Arsalan/Downloads/Avhad Bayline Residences',
-    orbit: null, // the orbit for Bayline has not been shot yet
+    orbit: '/Users/Arsalan/Downloads/Avhad Bayline Residences Mahim.mp4',
   },
 ];
 
@@ -122,7 +123,8 @@ async function stills(capture) {
 
 async function orbit(capture) {
   if (!capture.orbit) return null;
-  const src = join(capture.dir, capture.orbit);
+  // an orbit may sit beside the stills or anywhere else on disk
+  const src = capture.orbit.startsWith("/") ? capture.orbit : join(capture.dir, capture.orbit);
   const dest = join(OUT, capture.slug, capture.date, 'orbit');
   const tmp = join(TMP, `${capture.slug}-${capture.date}`);
   await mkdir(dest, { recursive: true });
@@ -153,13 +155,19 @@ async function orbit(capture) {
 }
 
 const only = process.argv[2];
+const onlySlug = process.argv[3]; // optional second argument: rebuild one project only
 // A partial run keeps what it did not rebuild: the manifest is merged, never replaced.
-const previous = only ? JSON.parse(await readFile(MANIFEST, 'utf8').catch(() => '{}')) : {};
+const previous = only || onlySlug ? JSON.parse(await readFile(MANIFEST, 'utf8').catch(() => '{}')) : {};
 const manifest = {};
 for (const capture of CAPTURES) {
+  const was = (previous[capture.slug] ?? []).find((c) => c.date === capture.date) ?? {};
+  if (onlySlug && capture.slug !== onlySlug) {
+    // not this project's turn: carry its manifest entry through untouched
+    if (was.date) (manifest[capture.slug] ??= []).push(was);
+    continue;
+  }
   const dest = join(OUT, capture.slug, capture.date);
   if (!only) await rm(dest, { recursive: true, force: true });
-  const was = (previous[capture.slug] ?? []).find((c) => c.date === capture.date) ?? {};
   const entry = { ...was, date: capture.date };
   if (only !== 'orbit') entry.views = await stills(capture);
   if (only !== 'stills') entry.orbit = await orbit(capture);
