@@ -9,9 +9,8 @@ import logo from '../assets/avhad-logo.svg';
 
 gsap.registerPlugin(useGSAP);
 
-// The index. A masthead, two developments set as an editorial list, and one full-bleed
-// photograph that answers whichever name you are looking at — the plate wipes across on
-// a curtain, and drifts slowly the whole time so the page is never quite still.
+// The index: the mark, the date, two names, one photograph. Everything else that was on
+// this page was caption for its own sake and has gone.
 export function Landing() {
   const root = useRef(null);
   const plates = useRef([]);
@@ -21,20 +20,20 @@ export function Landing() {
 
   useGSAP(
     () => {
-      // Arrival.
       gsap
         .timeline({ defaults: { ease: 'expo.out' } })
-        .from('.js-mast', { y: -14, opacity: 0, duration: 1, stagger: 0.07 })
-        .fromTo(plates.current[0], { clipPath: 'inset(0% 0% 0% 100%)' }, { clipPath: 'inset(0% 0% 0% 0%)', duration: 1.5 }, 0.1)
-        .from('.js-name', { yPercent: 115, duration: 1.2, stagger: 0.1 }, 0.35)
-        .from('.js-sub', { opacity: 0, y: 10, duration: 0.9, stagger: 0.08 }, 0.7)
-        .from('.js-rule', { scaleX: 0, duration: 1.2, stagger: 0.08 }, 0.3)
-        .from('.js-meta', { opacity: 0, y: 12, duration: 0.9, stagger: 0.07 }, 0.9)
-        .from('.js-foot', { opacity: 0, duration: 0.9 }, 1);
+        .from('.js-mast', { y: -16, opacity: 0, duration: 1, stagger: 0.08 })
+        .fromTo(plates.current[0], { clipPath: 'inset(0% 0% 0% 100%)' }, { clipPath: 'inset(0% 0% 0% 0%)', duration: 1.4 }, 0.1)
+        // A plain fade up — and fromTo with clearProps, not from(). A bare .from() leaves
+        // the element holding whatever inline opacity it had reached if the context is
+        // reverted mid-flight, and the names sit there half transparent looking washed
+        // out. Clearing the properties at the end hands them back to the stylesheet.
+        .fromTo('.js-name', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.9, stagger: 0.12, clearProps: 'opacity,transform' }, 0.3)
+        .fromTo('.js-sub', { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.8, stagger: 0.1, clearProps: 'opacity,transform' }, 0.6)
+        .from('.js-rule', { scaleX: 0, duration: 1.1, stagger: 0.1 }, 0.25);
 
-      // A slow drift on every plate, so the photograph breathes rather than sits.
       plates.current.forEach((plate, i) => {
-        gsap.to(plate, { scale: 1.09, duration: 22, ease: 'none', repeat: -1, yoyo: true, delay: i * 2 });
+        gsap.to(plate, { scale: 1.08, duration: 24, ease: 'none', repeat: -1, yoyo: true, delay: i * 2 });
       });
     },
     { scope: root },
@@ -43,10 +42,9 @@ export function Landing() {
   // Hovering a name pulls its photograph across the one before it.
   const show = (i) => {
     if (i === active || leaving.current) return;
-    const incoming = plates.current[i];
-    gsap.set(incoming, { zIndex: 2 });
+    gsap.set(plates.current[i], { zIndex: 2 });
     gsap.set(plates.current[active], { zIndex: 1 });
-    gsap.fromTo(incoming, { clipPath: 'inset(0% 0% 0% 100%)' }, { clipPath: 'inset(0% 0% 0% 0%)', duration: 1.05, ease: 'expo.inOut' });
+    gsap.fromTo(plates.current[i], { clipPath: 'inset(0% 0% 0% 100%)' }, { clipPath: 'inset(0% 0% 0% 0%)', duration: 1, ease: 'expo.inOut' });
     setActive(i);
   };
 
@@ -55,35 +53,36 @@ export function Landing() {
     leaving.current = true;
     gsap
       .timeline({ onComplete: () => navigate(`/${slug}`) })
-      .to('.js-name, .js-sub, .js-index', { yPercent: -110, opacity: 0, duration: 0.6, ease: 'power3.in', stagger: 0.04 })
-      .to('.js-rule, .js-mast, .js-meta, .js-foot', { opacity: 0, duration: 0.4, ease: 'power2.in' }, 0)
-      .to('.js-stage', { clipPath: 'inset(0% 0% 0% 0%)', duration: 0.9, ease: 'expo.inOut' }, 0.1)
-      .to(plates.current[active], { scale: 1.14, duration: 1.1, ease: 'expo.inOut' }, 0);
+      // Out on a fade, in on a fade: the page hands over to the development instead of
+      // flinging its own type about.
+      .to('.js-name, .js-sub, .js-index, .js-rule, .js-mast', { opacity: 0, duration: 0.4, ease: 'power2.in', stagger: 0.03 })
+      .to(plates.current[active], { scale: 1.07, duration: 0.75, ease: 'power2.inOut' }, 0);
   };
 
   const shown = PROJECTS[active];
   const latest = shown.captures.find((c) => !c.upcoming);
   const detail = latest ? viewsOf(latest)[0] : null;
-  const frames = PROJECTS.reduce((n, p) => n + (p.captures.find((c) => !c.upcoming) ? viewsOf(p.captures.find((c) => !c.upcoming)).length : 0), 0);
 
   return (
-    <main ref={root} className="grain flex h-dvh w-full flex-col bg-bone text-ink">
+    <main ref={root} className="paper-field relative flex h-dvh w-full flex-col text-ink">
       <span className="grain-layer z-20" />
 
-      <header className="js-mast z-20 flex items-start justify-between px-5 pt-5 md:px-10 md:pt-8 3xl:px-16 3xl:pt-10">
-        <img src={logo} alt="Avhad" className="h-8 w-auto md:h-10 3xl:h-12" />
-        <div className="text-right">
-          <p className="label text-ink/55">Construction progress</p>
-          <p className="label-micro mt-1 text-ink/40">{latest ? longDate(latest.date) : '—'}</p>
+      <header className="js-mast z-20 flex items-center justify-between gap-6 px-6 pt-6 md:px-12 md:pt-10 3xl:px-16">
+        <div className="flex items-center gap-5 md:gap-7">
+          <img src={logo} alt="Avhad" className="h-10 w-auto md:h-20 3xl:h-24" />
+          <span className="h-8 w-px rule-ink md:h-14" />
+          <p className="text-body font-medium leading-tight text-ink/75 md:text-title">
+            Two developments
+            <span className="block text-ink/50">Mahim, Mumbai</span>
+          </p>
         </div>
+        <p className="shrink-0 text-body font-semibold tracking-tight text-ink/80 md:text-title">{latest ? longDate(latest.date) : '—'}</p>
       </header>
 
-      <div className="grid min-h-0 flex-1 md:grid-cols-[1.02fr_1fr]">
-        {/* the list */}
-        <div className="flex min-h-0 flex-col justify-center px-5 py-5 md:px-10 md:py-8 3xl:px-16">
-          <p className="js-mast label-micro text-brass">Two developments · Mahim</p>
-
-          <ul className="mt-4 md:mt-7">
+      <div className="grid min-h-0 flex-1 items-stretch gap-0 md:grid-cols-[1fr_1fr]">
+        {/* the names */}
+        <div className="flex min-h-0 flex-col justify-center px-6 py-8 md:px-12 md:py-10 3xl:px-16">
+          <ul>
             {PROJECTS.map((p, i) => (
               <li key={p.slug}>
                 <span className="js-rule block h-px origin-left rule-ink" />
@@ -92,28 +91,27 @@ export function Landing() {
                   onMouseEnter={() => show(i)}
                   onFocus={() => show(i)}
                   onClick={() => enter(p.slug)}
-                  className="group flex w-full items-baseline gap-4 py-5 text-left md:gap-6 md:py-7 3xl:py-9"
+                  className="group flex w-full items-start gap-5 py-8 text-left md:gap-7 md:py-11 3xl:py-14"
                 >
-                  <span className={`js-index label-micro w-6 shrink-0 transition-colors duration-500 ${active === i ? 'text-brass' : 'text-ink/35'}`}>
+                  <span className={`js-index label mt-3 shrink-0 transition-colors duration-500 ${active === i ? 'text-brass' : 'text-ink/45'}`}>
                     {String(i + 1).padStart(2, '0')}
                   </span>
                   <span className="min-w-0 flex-1">
-                    <span className="block overflow-hidden">
-                      <span
-                        className={`js-name block font-display text-hero font-light leading-[0.95] transition-all duration-700 ${
-                          active === i ? 'text-ink md:translate-x-2' : 'text-ink/55'
-                        }`}
-                      >
-                        {p.name}
-                      </span>
+                    <span
+                      // the unselected name is quieter, not disabled
+                      className={`js-name block text-hero font-semibold leading-[1.02] tracking-tight transition-all duration-700 ${
+                        active === i ? 'text-ink md:translate-x-1.5' : 'text-ink/70'
+                      }`}
+                    >
+                      {p.name}
                     </span>
-                    <span className={`js-sub label-micro mt-2 block transition-colors duration-500 ${active === i ? 'text-ink/60' : 'text-ink/35'}`}>
-                      {p.place} · {p.blurb}
+                    <span className={`js-sub mt-3 block text-body transition-colors duration-500 ${active === i ? 'text-ink/70' : 'text-ink/55'}`}>
+                      {p.blurb}
                     </span>
                   </span>
                   <span
-                    className={`mb-1 hidden shrink-0 transition-all duration-700 md:block ${
-                      active === i ? 'translate-x-0 text-brass opacity-100' : '-translate-x-3 text-ink/30 opacity-0'
+                    className={`mt-2 hidden shrink-0 text-title transition-all duration-700 md:block ${
+                      active === i ? 'translate-x-0 text-brass opacity-100' : '-translate-x-3 text-ink/25 opacity-0'
                     }`}
                   >
                     →
@@ -125,24 +123,10 @@ export function Landing() {
               <span className="js-rule block h-px origin-left rule-ink" />
             </li>
           </ul>
-
-          {/* the space under the list earns its keep */}
-          <dl className="mt-7 flex gap-8 md:mt-10 md:gap-12">
-            {[
-              ['Flights', 'Quarterly'],
-              ['Elevations', String(frames).padStart(2, '0')],
-              ['Latest', latest ? longDate(latest.date).replace(/ \d{4}$/, '') : '—'],
-            ].map(([term, value]) => (
-              <div key={term} className="js-meta">
-                <dt className="label-micro text-ink/35">{term}</dt>
-                <dd className="mt-1.5 font-display text-title font-light leading-none text-ink/80">{value}</dd>
-              </div>
-            ))}
-          </dl>
         </div>
 
-        {/* the plate — full bleed to the edge of the page */}
-        <div className="js-stage relative min-h-0 overflow-hidden max-md:mx-5 max-md:mb-5">
+        {/* the photograph */}
+        <div className="relative min-h-0 overflow-hidden max-md:mx-6 max-md:mb-6">
           {PROJECTS.map((p, i) => {
             const photo = coverOf(p);
             return (
@@ -158,19 +142,14 @@ export function Landing() {
               )
             );
           })}
-          <div className="pointer-events-none absolute inset-0 z-10 bg-linear-to-t from-ink/45 via-transparent to-transparent" />
+          <div className="pointer-events-none absolute inset-0 z-10 bg-linear-to-t from-ink/50 via-transparent to-transparent" />
           {detail && (
-            <p className="label-micro pointer-events-none absolute bottom-4 left-4 z-10 text-bone/90 [text-shadow:0_1px_10px_rgba(16,21,43,.9)] md:bottom-6 md:left-6">
+            <p className="label pointer-events-none absolute bottom-5 left-5 z-10 text-bone [text-shadow:0_1px_12px_rgba(16,21,43,.95)] md:bottom-7 md:left-7">
               {shown.name} · {detail.label} · {detail.altitude} m
             </p>
           )}
         </div>
       </div>
-
-      <footer className="js-foot z-20 flex items-center justify-between px-5 pb-5 md:px-10 md:pb-8 3xl:px-16">
-        <p className="label-micro text-ink/40">Flown quarterly by drone</p>
-        <p className="label-micro text-ink/40 max-lg:hidden lg:mr-32 3xl:mr-40">Select a development</p>
-      </footer>
 
       <Brainwing tone="ink" />
     </main>

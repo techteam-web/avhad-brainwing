@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useMemo, useState } from 'react';
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { Link, Navigate, useParams } from 'react-router-dom';
 import gsap from 'gsap';
 import { Brainwing } from '../components/Brainwing';
@@ -35,8 +35,15 @@ function ProjectView({ project }) {
   // A capture may not have been flown as an orbit; the stills are always there.
   const stage = mode === 'views' ? 'views' : orbit ? 'orbit' : 'missing';
 
+  // The index fades out; this fades in. Nothing slides, so there is no direction to get
+  // backwards when you arrive or go back.
+  const root = useRef(null);
+  useLayoutEffect(() => {
+    gsap.fromTo(root.current, { opacity: 0 }, { opacity: 1, duration: 0.5, ease: 'power2.out' });
+  }, []);
+
   return (
-    <main className="relative h-dvh w-full overflow-clip bg-ink text-bone">
+    <main ref={root} className="relative h-dvh w-full overflow-clip bg-ink text-bone">
       {stage === 'orbit' && <OrbitStage orbit={orbit} />}
       {stage === 'views' && <Views views={views} active={active} onOpen={() => setOpen(true)} />}
       {stage === 'missing' && <Missing date={capture.date} onViews={() => setMode('views')} />}
@@ -46,19 +53,19 @@ function ProjectView({ project }) {
         <div className="pointer-events-auto flex items-center gap-4">
           <Link
             to="/"
-            className="label-micro group flex items-center gap-2 text-bone/85 transition [text-shadow:0_1px_10px_rgba(16,21,43,.9)] hover:text-bone"
+            className="label group flex items-center gap-2 text-bone transition [text-shadow:0_1px_10px_rgba(16,21,43,.9)] hover:text-brass-lit"
             aria-label="All developments"
           >
             <span className="inline-block transition-transform duration-500 group-hover:-translate-x-1">←</span>
             <span className="max-mob:hidden">Index</span>
           </Link>
-          <span className="h-4 w-px rule-bone" />
-          <img src={logo} alt="Avhad" className="h-5 w-auto brightness-0 invert drop-shadow-[0_1px_10px_rgba(16,21,43,.9)] md:h-6" />
+          <span className="h-7 w-px rule-bone md:h-9" />
+          <img src={logo} alt="Avhad" className="h-10 w-auto brightness-0 invert drop-shadow-[0_1px_12px_rgba(16,21,43,.9)] md:h-12 3xl:h-14" />
         </div>
 
         <div className="text-right">
-          <h1 className="font-display text-title font-light leading-none text-bone [text-shadow:0_1px_14px_rgba(16,21,43,.9)]">{project.name}</h1>
-          <p className="label-micro mt-1.5 text-bone/75 [text-shadow:0_1px_10px_rgba(16,21,43,.9)]">{project.place}</p>
+          <h1 className="text-title font-semibold leading-none tracking-tight text-bone [text-shadow:0_1px_14px_rgba(16,21,43,.9)]">{project.name}</h1>
+          <p className="label mt-2 text-bone/80 [text-shadow:0_1px_10px_rgba(16,21,43,.9)]">{project.place}</p>
         </div>
       </header>
 
@@ -70,7 +77,7 @@ function ProjectView({ project }) {
         <nav className="flex items-center gap-6 md:gap-9">
           {MODES.map((m) => (
             <button key={m.key} type="button" onClick={() => setMode(m.key)} className="group relative pb-1.5">
-              <span className={`label-micro transition-colors duration-300 ${mode === m.key ? 'text-bone' : 'text-bone/60 group-hover:text-bone/90'}`}>{m.label}</span>
+              <span className={`label transition-colors duration-300 ${mode === m.key ? 'text-bone' : 'text-bone/65 group-hover:text-bone/90'}`}>{m.label}</span>
               <span className={`absolute inset-x-0 bottom-0 h-px origin-center transition-transform duration-500 ${mode === m.key ? 'scale-x-100 bg-brass' : 'scale-x-0 bg-bone/40'}`} />
             </button>
           ))}
@@ -82,7 +89,7 @@ function ProjectView({ project }) {
             <div className="mt-2 flex gap-5 md:gap-7">
               {views.map((v) => (
                 <button key={v.key} type="button" onClick={() => setView(v.key)} className="group">
-                  <span className={`label-micro transition-colors duration-300 ${active?.key === v.key ? 'text-brass-lit' : 'text-bone/65 group-hover:text-bone/95'}`}>
+                  <span className={`label transition-colors duration-300 ${active?.key === v.key ? 'text-brass-lit' : 'text-bone/70 group-hover:text-bone/95'}`}>
                     {v.label}
                   </span>
                 </button>
@@ -95,7 +102,7 @@ function ProjectView({ project }) {
       <Timeline captures={project.captures} date={date} onPick={setDate} />
 
       {stage === 'views' && active && (
-        <p className="label-micro pointer-events-none absolute bottom-6 left-5 z-20 rounded-full bg-ink/45 px-3.5 py-1.5 text-bone/85 md:bottom-8 md:left-8 3xl:left-10">
+        <p className="label pointer-events-none absolute bottom-6 left-5 z-20 rounded-full bg-ink/50 px-4 py-2 text-bone md:bottom-8 md:left-8 3xl:left-10">
           {active.label} elevation · {active.altitude} m · {longDate(capture.date)}
         </p>
       )}
@@ -133,7 +140,7 @@ function Missing({ date, onViews }) {
     <div className="absolute inset-0 grid place-items-center px-6">
       <div className="max-w-md text-center">
         <p className="label-micro text-brass">{longDate(date)}</p>
-        <h2 className="mt-4 font-display text-hero font-light leading-tight text-bone">The orbit follows</h2>
+        <h2 className="mt-4 text-hero font-semibold leading-tight tracking-tight text-bone">The orbit follows</h2>
         <p className="mx-auto mt-3 max-w-sm text-bone/55">This visit was photographed; the orbit flight comes with the next one.</p>
         <button type="button" onClick={onViews} className="label-micro group mt-7 inline-flex items-center gap-2 text-bone">
           <span className="h-px w-6 bg-brass transition-all duration-500 group-hover:w-10" />
@@ -161,7 +168,7 @@ function Timeline({ captures, date, onPick }) {
                 className={`group flex items-center gap-3 ${c.upcoming ? 'cursor-default' : ''}`}
               >
                 <span
-                  className={`label-micro whitespace-nowrap transition-colors duration-300 [text-shadow:0_1px_10px_rgba(16,21,43,.9)] max-md:hidden ${
+                  className={`label whitespace-nowrap transition-colors duration-300 [text-shadow:0_1px_10px_rgba(16,21,43,.9)] max-md:hidden ${
                     on ? 'text-bone' : c.upcoming ? 'text-bone/40' : 'text-bone/70 group-hover:text-bone/95'
                   }`}
                 >

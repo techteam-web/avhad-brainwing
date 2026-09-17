@@ -1,37 +1,34 @@
 @import 'tailwindcss';
 
 /* AVHAD — the look.
-   Quiet luxury rather than flash: the photographs carry the page, the interface stays out
-   of their way. Warm paper ground, the logo's navy as ink, one muted brass for anything
-   live, and hairlines instead of boxes. Type is editorial — a light serif at display
-   sizes, a plain sans for interface, a mono for anything factual (dates, headings,
-   compass points), which is the three-register system luxury property brands use. */
+   One typeface: Inter, the workhorse most of the web reads in, set large enough to
+   actually read. Warm paper ground with a surveyor's grid and a paper tooth under it, the
+   logo's navy as ink, one muted brass for anything live. */
 
 @theme {
   --color-ink: #10152b; /* deepest navy — text on paper, ground behind photographs */
   --color-navy: #1b224e; /* straight off the logo */
   --color-navy-soft: #2a3260;
-  --color-navy-glass: #1b224ecc;
 
   --color-bone: #f3eee6; /* warm paper, never white */
   --color-bone-dim: #ded7c9;
-  --color-mist: #8b91a6; /* muted secondary on either ground */
+  --color-mist: #8b91a6;
 
   --color-brass: #a9885b; /* the one accent */
   --color-brass-lit: #c9a876;
 
-  --font-display: 'Cormorant Variable', 'Cormorant Garamond', Georgia, serif;
-  --font-sans: 'Inter Variable', Inter, system-ui, sans-serif;
-  --font-mono: 'JetBrains Mono Variable', ui-monospace, monospace;
+  --font-display: 'Inter Variable', Inter, system-ui, -apple-system, sans-serif;
+  --font-sans: 'Inter Variable', Inter, system-ui, -apple-system, sans-serif;
 
   /* The page never scrolls, so type keys off whichever of width or height runs out
-     first, and keeps climbing on kiosk-sized displays. */
-  --text-display: clamp(2.5rem, min(7vw, 12vh), 8rem);
-  --text-hero: clamp(1.75rem, min(3.4vw, 6vh), 4.25rem);
-  --text-title: clamp(1.125rem, min(1.6vw, 2.8vh), 2.125rem);
-  --text-body: clamp(0.875rem, min(0.95vw, 1.7vh), 1.125rem);
-  --text-label: clamp(0.625rem, min(0.7vw, 1.24vh), 0.875rem);
-  --text-micro: clamp(0.5625rem, min(0.6vw, 1.07vh), 0.75rem);
+     first. Everything is a step larger than a marketing site would use, because this is
+     read across a desk and on a sales-office screen. */
+  --text-display: clamp(2.75rem, min(6.4vw, 11vh), 6.5rem);
+  --text-hero: clamp(2rem, min(4.2vw, 7.4vh), 4.25rem);
+  --text-title: clamp(1.25rem, min(1.7vw, 3vh), 2rem);
+  --text-body: clamp(0.9375rem, min(1.05vw, 1.85vh), 1.25rem);
+  --text-label: clamp(0.8125rem, min(0.92vw, 1.6vh), 1.0625rem);
+  --text-micro: clamp(0.75rem, min(0.8vw, 1.4vh), 0.9375rem);
 
   --breakpoint-mob: 25rem;
   --breakpoint-sm: 40rem;
@@ -67,15 +64,13 @@
     -webkit-tap-highlight-color: transparent;
   }
 
-  /* Display type is the serif, set light and tight — the single strongest signal that
-     this is a property brand and not a dashboard. */
   h1,
   h2,
   h3 {
     font-family: var(--font-display);
-    font-weight: 300;
-    line-height: 1.02;
-    letter-spacing: -0.015em;
+    font-weight: 600;
+    line-height: 1.04;
+    letter-spacing: -0.022em;
     margin: 0;
   }
 
@@ -103,53 +98,47 @@
   }
 }
 
-/* Mono, letter-spaced, upper — dates, compass points, every small caption. */
+/* Small caps-ish label — readable, not a whisper. */
 @utility label {
-  font-family: var(--font-mono);
   font-size: var(--text-label);
-  letter-spacing: 0.18em;
+  font-weight: 500;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   font-variant-numeric: tabular-nums;
 }
 
 @utility label-micro {
-  font-family: var(--font-mono);
   font-size: var(--text-micro);
-  letter-spacing: 0.22em;
+  font-weight: 500;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   font-variant-numeric: tabular-nums;
 }
 
-/* A fine paper tooth over flat colour. Without it a large field of one colour reads as
-   a screen; with it, as stock. Kept under 4% so it is felt rather than seen. */
-@utility grain {
-  position: relative;
+/* The ground the index sits on: a surveyor's grid, light falling from the top left, the
+   ink pooling bottom right. Flat colour alone reads as an empty browser window. */
+@utility paper-field {
+  background-color: var(--color-bone);
+  background-image:
+    radial-gradient(58% 48% at 10% 6%, rgba(255, 255, 255, 0.85), transparent 70%),
+    radial-gradient(55% 50% at 92% 96%, rgba(27, 34, 78, 0.08), transparent 74%),
+    repeating-linear-gradient(0deg, rgba(27, 34, 78, 0.05) 0 1px, transparent 1px 84px),
+    repeating-linear-gradient(90deg, rgba(27, 34, 78, 0.05) 0 1px, transparent 1px 84px);
 }
 
+/* A paper tooth over the whole thing, felt rather than seen. */
 @utility grain-layer {
   position: absolute;
   inset: 0;
   pointer-events: none;
-  opacity: 0.035;
+  opacity: 0.05;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
-/* Hairlines carry the layout instead of borders and cards. */
 @utility rule-ink {
-  background: color-mix(in srgb, var(--color-ink) 14%, transparent);
+  background: color-mix(in srgb, var(--color-ink) 16%, transparent);
 }
 
 @utility rule-bone {
   background: color-mix(in srgb, var(--color-bone) 22%, transparent);
-}
-
-@keyframes rise {
-  from {
-    opacity: 0;
-    transform: translateY(0.75rem);
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
 }
