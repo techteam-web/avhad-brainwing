@@ -16,7 +16,7 @@ const META = {
   bayline: {
     name: 'Avhad Bayline Residences',
     place: 'Mahim · Mumbai',
-    blurb: 'Piling grid taking shape',
+    blurb: 'Piling under way',
     logo: '/images/bayline-white.png',
     logoGold: '/images/bayline-gold.png',
   },
