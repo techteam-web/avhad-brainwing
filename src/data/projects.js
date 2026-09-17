@@ -3,22 +3,23 @@ import assets from './assets.json';
 // Everything about a project that is not an asset. The captures themselves — their dates,
 // the orbit, the 3D scene and the stills grouped by compass view — come from
 // assets.json, which scripts/ingest.mjs writes.
-// Each development has its own wordmark from the brand pack: Homestead's is set in gold,
+// The order here is the order they appear on the index. Each development has its own
+// wordmark from the brand pack: Homestead's is set in gold,
 // Bayline's comes in white and gold-foil. `logo` is the one to use on the dark ground.
 const META = {
-  homestead: {
-    name: 'Avhad Homestead',
-    place: 'Mahim · Mumbai',
-    blurb: 'Excavation under way',
-    logo: '/images/homestead-gold.png',
-    logoGold: '/images/homestead-gold.png',
-  },
   bayline: {
     name: 'Avhad Bayline Residences',
     place: 'Mahim · Mumbai',
     blurb: 'Piling under way',
     logo: '/images/bayline-white.png',
     logoGold: '/images/bayline-gold.png',
+  },
+  homestead: {
+    name: 'Avhad Homestead',
+    place: 'Mahim · Mumbai',
+    blurb: 'Excavation under way',
+    logo: '/images/homestead-gold.png',
+    logoGold: '/images/homestead-gold.png',
   },
 };
 
