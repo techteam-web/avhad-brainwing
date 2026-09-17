@@ -9,7 +9,7 @@ const META = {
   homestead: {
     name: 'Avhad Homestead',
     place: 'Mahim · Mumbai',
-    blurb: 'Excavation and piling under way',
+    blurb: 'Excavation under way',
     logo: '/images/homestead-gold.png',
     logoGold: '/images/homestead-gold.png',
   },

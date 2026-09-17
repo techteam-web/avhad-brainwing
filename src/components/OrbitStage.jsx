@@ -12,7 +12,6 @@ import { coverRect, preload, srcAt, widthFor } from '../lib/images';
 
 const WIDTHS = [640, 1280];
 const SENSITIVITY = 1; // one drag across the full screen width = one full turn
-const IDLE = 7000; // how long a still hand waits before the prompt returns
 
 export function OrbitStage({ orbit, active = true }) {
   const canvas = useRef(null);
@@ -43,10 +42,11 @@ export function OrbitStage({ orbit, active = true }) {
     // The prompt appears when nothing has been touched for a while, and leaves the moment
     // it is.
     let idleTimer = setTimeout(() => alive && live.current && setPrompt(true), 2200);
+    // Asked once. The moment the orbit is turned the prompt is done for good — repeating
+    // it at someone who already knows how it works is nagging, not guidance.
     const touched = () => {
       setPrompt(false);
       clearTimeout(idleTimer);
-      idleTimer = setTimeout(() => alive && live.current && setPrompt(true), IDLE);
     };
 
     const sizeCanvas = () => {
