@@ -223,7 +223,6 @@
       "splat": {
         "src": "/assets/homestead/2026-09-10/splat/site.ksplat",
         "light": "/assets/homestead/2026-09-10/splat/site-light.ksplat",
-        "splats": 484165,
         "scene": {
           "center": [
             -0.062,

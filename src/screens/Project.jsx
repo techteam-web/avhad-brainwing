@@ -1,13 +1,19 @@
-import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useMemo, useState } from 'react';
 import { Link, Navigate, useParams } from 'react-router-dom';
 import gsap from 'gsap';
+import { Brainwing } from '../components/Brainwing';
 import { OrbitStage } from '../components/OrbitStage';
 import { SplatStage } from '../components/SplatStage';
-import { VIEWS, getProject, longDate, monthOf, yearOf, viewsOf } from '../data/projects';
+import { getProject, longDate, monthOf, viewsOf, yearOf } from '../data/projects';
 import { srcAt, widthFor } from '../lib/images';
 import logo from '../assets/avhad-logo.svg';
 
 const STILL_WIDTHS = [640, 1280, 1920];
+const MODES = [
+  { key: 'orbit', label: 'Orbit' },
+  { key: 'splat', label: '3D' },
+  { key: 'views', label: 'Views' },
+];
 
 export function Project() {
   const { slug } = useParams();
@@ -21,254 +27,166 @@ function ProjectView({ project }) {
   const [date, setDate] = useState(shot.at(-1)?.date ?? project.captures[0].date);
   const [mode, setMode] = useState('orbit');
   const [view, setView] = useState('top');
-  const [open, setOpen] = useState(null); // index into the current view's photos
+  const [open, setOpen] = useState(false);
 
   const capture = project.captures.find((c) => c.date === date) ?? project.captures[0];
   const views = useMemo(() => viewsOf(capture), [capture]);
-  // Keep the chosen view if this date has it, otherwise fall back to its first one.
-  const activeView = views.some((v) => v.key === view) ? view : views[0]?.key;
-  const photos = views.find((v) => v.key === activeView)?.photos ?? [];
+  const active = views.find((v) => v.key === view) ?? views[0];
 
   const { orbit, splat } = capture;
-  // A capture may be missing its orbit or its 3D scene; the stills are always there.
   const stage = mode === 'views' ? 'views' : mode === 'orbit' && orbit ? 'orbit' : mode === 'splat' && splat ? 'splat' : 'missing';
 
   return (
-    <main className="relative h-dvh w-full overflow-clip bg-navy text-paper">
+    <main className="relative h-dvh w-full overflow-clip bg-ink text-bone">
       {stage === 'orbit' && <OrbitStage orbit={orbit} />}
       {stage === 'splat' && <SplatStage splat={splat} />}
-      {stage === 'views' && <Views photos={photos} onOpen={setOpen} />}
+      {stage === 'views' && <Views views={views} active={active} onOpen={() => setOpen(true)} />}
       {stage === 'missing' && <Missing mode={mode} date={capture.date} onViews={() => setMode('views')} />}
 
-      {/* header */}
-      <header className="pointer-events-none absolute inset-x-0 top-0 z-30 flex items-start justify-between gap-4 p-4 md:p-6 3xl:p-8">
-        <div className="flex items-center gap-3">
-          <Link to="/" className="pointer-events-auto grid size-10 place-items-center rounded-full bg-paper/95 text-navy transition hover:bg-paper md:size-11" aria-label="All projects">
-            ←
+      {/* masthead */}
+      <header className="pointer-events-none absolute inset-x-0 top-0 z-30 flex items-start justify-between gap-4 p-5 md:p-8 3xl:p-10">
+        <div className="pointer-events-auto flex items-center gap-4">
+          <Link
+            to="/"
+            className="label-micro group flex items-center gap-2 text-bone/85 transition [text-shadow:0_1px_10px_rgba(16,21,43,.9)] hover:text-bone"
+            aria-label="All developments"
+          >
+            <span className="inline-block transition-transform duration-500 group-hover:-translate-x-1">←</span>
+            <span className="max-mob:hidden">Index</span>
           </Link>
-          <span className="pointer-events-auto rounded-full bg-paper/95 px-3 py-2">
-            <img src={logo} alt="Avhad" className="h-4 w-auto md:h-5" />
-          </span>
+          <span className="h-4 w-px rule-bone" />
+          <img src={logo} alt="Avhad" className="h-5 w-auto brightness-0 invert drop-shadow-[0_1px_10px_rgba(16,21,43,.9)] md:h-6" />
         </div>
 
         <div className="text-right">
-          <h1 className="text-title font-semibold leading-none tracking-tight drop-shadow-[0_1px_10px_rgba(18,21,31,.55)]">{project.name}</h1>
-          <p className="label mt-1 text-paper/70">{project.place}</p>
+          <h1 className="font-display text-title font-light leading-none text-bone [text-shadow:0_1px_14px_rgba(16,21,43,.9)]">{project.name}</h1>
+          <p className="label-micro mt-1.5 text-bone/75 [text-shadow:0_1px_10px_rgba(16,21,43,.9)]">{project.place}</p>
         </div>
       </header>
 
-      {/* orbit / views switch */}
-      {/* on a phone this sits below the header rather than colliding with the name */}
-      <div className="absolute left-1/2 top-20 z-30 -translate-x-1/2 md:top-6">
-        <div className="flex gap-1 rounded-full bg-navy/55 p-1 ring-1 ring-paper/25 backdrop-blur-md">
-          {[['orbit', 'Orbit'], ['splat', '3D Splat'], ['views', 'Views']].map(([key, text]) => (
-            <button
-              key={key}
-              type="button"
-              onClick={() => setMode(key)}
-              className={`label whitespace-nowrap rounded-full px-3.5 py-2 transition md:px-4 ${mode === key ? 'bg-paper text-navy' : 'text-paper/75 hover:text-paper'}`}
-            >
-              {text}
+      {/* the three stages — a hairline control, not a pill */}
+      {/* One cluster holds the stage switch and, in Views, the compass points beneath it.
+          A flat wash carries them over a white building — blurring the backdrop instead
+          just smears a grey block across the photograph. */}
+      <div className="absolute left-1/2 top-4 z-30 flex -translate-x-1/2 flex-col items-center rounded-2xl bg-ink/45 px-6 py-2.5 md:top-7 3xl:top-9">
+        <nav className="flex items-center gap-6 md:gap-9">
+          {MODES.map((m) => (
+            <button key={m.key} type="button" onClick={() => setMode(m.key)} className="group relative pb-1.5">
+              <span className={`label-micro transition-colors duration-300 ${mode === m.key ? 'text-bone' : 'text-bone/60 group-hover:text-bone/90'}`}>{m.label}</span>
+              <span className={`absolute inset-x-0 bottom-0 h-px origin-center transition-transform duration-500 ${mode === m.key ? 'scale-x-100 bg-brass' : 'scale-x-0 bg-bone/40'}`} />
             </button>
           ))}
-        </div>
-      </div>
+        </nav>
 
-      {/* view categories */}
-      {mode === 'views' && (
-        <div className="absolute inset-x-0 top-33 z-30 flex justify-center px-4 md:top-20">
-          <div className="flex max-w-full gap-1 overflow-hidden rounded-full bg-navy/45 p-1 ring-1 ring-paper/20 backdrop-blur-md">
-            {VIEWS.map((v) => {
-              const has = views.some((x) => x.key === v.key);
-              return (
-                <button
-                  key={v.key}
-                  type="button"
-                  disabled={!has}
-                  onClick={() => setView(v.key)}
-                  className={`label rounded-full px-3.5 py-2 transition md:px-4 ${
-                    view === v.key ? 'bg-paper text-navy' : has ? 'text-paper/75 hover:text-paper' : 'text-paper/30'
-                  }`}
-                >
-                  {v.label}
+        {stage === 'views' && (
+          <>
+            <span className="mt-2 h-px w-full rule-bone" />
+            <div className="mt-2 flex gap-5 md:gap-7">
+              {views.map((v) => (
+                <button key={v.key} type="button" onClick={() => setView(v.key)} className="group">
+                  <span className={`label-micro transition-colors duration-300 ${active?.key === v.key ? 'text-brass-lit' : 'text-bone/65 group-hover:text-bone/95'}`}>
+                    {v.label}
+                  </span>
                 </button>
-              );
-            })}
-          </div>
-        </div>
-      )}
+              ))}
+            </div>
+          </>
+        )}
+      </div>
 
       <Timeline captures={project.captures} date={date} onPick={setDate} />
 
-      {open !== null && <Viewer photos={photos} index={open} onIndex={setOpen} onClose={() => setOpen(null)} />}
+      {stage === 'views' && active && (
+        <p className="label-micro pointer-events-none absolute bottom-6 left-5 z-20 rounded-full bg-ink/45 px-3.5 py-1.5 text-bone/85 md:bottom-8 md:left-8 3xl:left-10">
+          {active.label} elevation · {active.altitude} m · {longDate(capture.date)}
+        </p>
+      )}
+
+      {open && active && <Viewer views={views} active={active} onPick={setView} onClose={() => setOpen(false)} />}
+
+      <Brainwing tone="bone" />
     </main>
   );
 }
 
-// Shown when this capture has no orbit footage, or no 3D scene built from it yet.
+// One photograph per compass point, all of them resident so switching is a cross-fade
+// rather than a load. The four sides are chosen at as near one altitude as the flight
+// allows, so the change reads as the camera swinging round the building.
+function Views({ views, active, onOpen }) {
+  return (
+    <button type="button" onClick={onOpen} className="absolute inset-0 block cursor-zoom-in">
+      {views.map((v) => (
+        <img
+          key={v.key}
+          src={srcAt(v.photo, 1920)}
+          alt=""
+          className={`absolute inset-0 h-full w-full object-cover transition-all duration-1100 ease-[cubic-bezier(.16,1,.3,1)] ${
+            active?.key === v.key ? 'scale-100 opacity-100' : 'scale-[1.03] opacity-0'
+          }`}
+        />
+      ))}
+      <span className="pointer-events-none absolute inset-0 bg-linear-to-b from-ink/45 via-transparent to-ink/35" />
+    </button>
+  );
+}
+
 function Missing({ mode, date, onViews }) {
   const copy = {
-    orbit: ['Orbit arriving with the next capture', 'The stills from this visit are ready now.'],
-    splat: ['3D scene not built for this capture', 'It is reconstructed from the orbit footage, so it follows once that is flown.'],
+    orbit: ['The orbit follows', 'This visit was photographed; the orbit flight comes with the next one.'],
+    splat: ['No 3D scene for this visit', 'It is reconstructed from the orbit footage, so it follows once that is flown.'],
   }[mode] ?? ['Nothing here yet', ''];
 
   return (
     <div className="absolute inset-0 grid place-items-center px-6">
-      <div className="max-w-sm text-center">
-        <p className="label text-paper/60">{longDate(date)}</p>
-        <h2 className="mt-2 text-hero font-semibold leading-tight">{copy[0]}</h2>
-        <p className="mt-2 text-label text-paper/70">{copy[1]}</p>
-        <button type="button" onClick={onViews} className="label mt-5 rounded-full bg-paper px-5 py-2.5 text-navy transition hover:bg-paper/85">
-          Browse views
+      <div className="max-w-md text-center">
+        <p className="label-micro text-brass">{longDate(date)}</p>
+        <h2 className="mt-4 font-display text-hero font-light leading-tight text-bone">{copy[0]}</h2>
+        <p className="mx-auto mt-3 max-w-sm text-bone/55">{copy[1]}</p>
+        <button type="button" onClick={onViews} className="label-micro group mt-7 inline-flex items-center gap-2 text-bone">
+          <span className="h-px w-6 bg-brass transition-all duration-500 group-hover:w-10" />
+          See the photographs
         </button>
       </div>
     </div>
   );
 }
 
-// The dates of this project, newest at the bottom: a rail on the right on wide screens,
-// a row under the header on phones. Quarters not yet flown sit on it as hollow marks.
+// The dates: a hairline rail down the right on wide screens, a row on phones. Quarters
+// not yet flown sit on it hollow.
 function Timeline({ captures, date, onPick }) {
   return (
-    <nav className="absolute z-30 max-md:inset-x-0 max-md:bottom-20 max-md:flex max-md:justify-center md:right-6 md:top-1/2 md:-translate-y-1/2 3xl:right-10">
-      {/* a pill, like the other controls — it keeps the dates legible over a bright frame
-          without a gradient creeping in around the edge of the page */}
-      <ul className="flex gap-2 rounded-full bg-navy/50 px-3 py-2 ring-1 ring-paper/20 backdrop-blur-md md:flex-col md:items-end md:gap-4 md:rounded-2xl md:px-4 md:py-4">
+    <nav className="absolute z-30 max-md:inset-x-0 max-md:bottom-16 max-md:flex max-md:justify-center md:right-8 md:top-1/2 md:-translate-y-1/2 3xl:right-10">
+      <ul className="flex items-center gap-5 rounded-full bg-ink/45 px-4 py-2 md:flex-col md:items-end md:gap-5 md:rounded-2xl md:px-4 md:py-4">
         {captures.map((c) => {
-          const active = c.date === date;
+          const on = c.date === date;
           return (
             <li key={c.date}>
               <button
                 type="button"
                 disabled={c.upcoming}
                 onClick={() => onPick(c.date)}
-                className={`group flex items-center gap-3 transition ${c.upcoming ? 'cursor-default' : ''}`}
+                className={`group flex items-center gap-3 ${c.upcoming ? 'cursor-default' : ''}`}
               >
                 <span
-                  className={`label text-right leading-none transition max-md:hidden ${
-                    active ? 'text-paper' : c.upcoming ? 'text-paper/50' : 'text-paper/75 group-hover:text-paper'
+                  className={`label-micro whitespace-nowrap transition-colors duration-300 [text-shadow:0_1px_10px_rgba(16,21,43,.9)] max-md:hidden ${
+                    on ? 'text-bone' : c.upcoming ? 'text-bone/40' : 'text-bone/70 group-hover:text-bone/95'
                   }`}
                 >
-                  {monthOf(c.date)} <span className="opacity-60">{yearOf(c.date).slice(2)}</span>
+                  {monthOf(c.date)} {yearOf(c.date).slice(2)}
                 </span>
-                <span className={`relative grid place-items-center transition ${active ? 'size-3.5' : 'size-2.5'}`}>
-                  <span
-                    className={`size-full rounded-full transition ${
-                      active ? 'bg-brass ring-4 ring-brass/25' : c.upcoming ? 'border border-dashed border-paper/50' : 'bg-paper/70 group-hover:bg-paper'
-                    }`}
-                  />
-                </span>
+                <span className={`block h-px transition-all duration-500 ${on ? 'w-6 bg-brass' : c.upcoming ? 'w-2 bg-bone/25' : 'w-3 bg-bone/50 group-hover:w-5'}`} />
               </button>
             </li>
           );
         })}
       </ul>
-      <p className="label absolute right-1 top-full mt-2.5 hidden whitespace-nowrap text-paper/60 [text-shadow:0_1px_8px_rgba(18,21,31,.85)] md:block">Capture date</p>
     </nav>
   );
 }
 
-// One view's photographs, side by side. Drag left and right; no vertical scroll anywhere.
-function Views({ photos, onOpen }) {
-  const track = useRef(null);
-  const state = useRef({ x: 0, target: 0, dragging: false, last: 0, velocity: 0 });
-
-  useLayoutEffect(() => {
-    const el = track.current;
-    if (!el) return;
-    const s = state.current;
-    s.x = s.target = 0;
-    el.style.transform = 'translate3d(0px,0,0)';
-    gsap.fromTo(el.children, { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.8, stagger: 0.06, ease: 'expo.out' });
-  }, [photos]);
-
-  useEffect(() => {
-    const el = track.current;
-    if (!el) return;
-    const s = state.current;
-    let raf = 0;
-    const limit = () => Math.min(0, el.parentElement.clientWidth - el.scrollWidth);
-
-    const tick = () => {
-      s.target = Math.min(0, Math.max(limit(), s.target));
-      s.x += (s.target - s.x) * 0.14;
-      el.style.transform = `translate3d(${s.x}px,0,0)`;
-      raf = Math.abs(s.target - s.x) > 0.3 || s.dragging ? requestAnimationFrame(tick) : 0;
-    };
-    const kick = () => {
-      if (!raf) raf = requestAnimationFrame(tick);
-    };
-
-    const onDown = (e) => {
-      s.dragging = true;
-      s.moved = 0;
-      s.last = e.clientX;
-      kick();
-    };
-    const onMove = (e) => {
-      if (!s.dragging) return;
-      const dx = e.clientX - s.last;
-      s.moved += Math.abs(dx);
-      // Capture only once this is really a drag; capturing on press would swallow the
-      // click and a tap would never reach the photograph underneath.
-      if (s.moved > 6 && !el.hasPointerCapture(e.pointerId)) el.setPointerCapture(e.pointerId);
-      s.target += dx;
-      s.last = e.clientX;
-    };
-    const onUp = (e) => {
-      s.dragging = false;
-      if (el.hasPointerCapture(e.pointerId)) el.releasePointerCapture(e.pointerId);
-      kick();
-    };
-    const onWheel = (e) => {
-      s.target -= Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
-      kick();
-    };
-
-    el.addEventListener('pointerdown', onDown);
-    el.addEventListener('pointermove', onMove);
-    el.addEventListener('pointerup', onUp);
-    el.addEventListener('pointercancel', onUp);
-    el.addEventListener('wheel', onWheel, { passive: true });
-    return () => {
-      cancelAnimationFrame(raf);
-      el.removeEventListener('pointerdown', onDown);
-      el.removeEventListener('pointermove', onMove);
-      el.removeEventListener('pointerup', onUp);
-      el.removeEventListener('pointercancel', onUp);
-      el.removeEventListener('wheel', onWheel);
-    };
-  }, [photos]);
-
-  return (
-    <div className="absolute inset-0 overflow-hidden bg-navy">
-      <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 cursor-grab touch-none active:cursor-grabbing">
-        {/* the right padding keeps the last photograph clear of the date rail */}
-        <div ref={track} className="flex w-max items-center gap-4 px-5 md:gap-6 md:pl-10 md:pr-40 3xl:pr-52">
-          {photos.map((p, i) => (
-            <button
-              key={p.id}
-              type="button"
-              onClick={() => onOpen(i)}
-              className="group relative h-[46vh] shrink-0 overflow-hidden rounded-xl bg-navy-2 ring-1 ring-paper/15 md:h-[56vh]"
-              style={{ aspectRatio: `${p.width} / ${p.height}`, backgroundImage: `url(${p.lqip})`, backgroundSize: 'cover' }}
-            >
-              <img src={srcAt(p, 1280)} alt="" className="h-full w-full object-cover transition duration-700 group-hover:scale-[1.03]" />
-              <span className="label absolute bottom-3 left-3 rounded-full bg-navy/70 px-2.5 py-1 text-paper/90 backdrop-blur-sm">
-                {String(i + 1).padStart(2, '0')} · {p.time?.slice(0, 5)}
-              </span>
-            </button>
-          ))}
-        </div>
-      </div>
-      <p className="label pointer-events-none absolute inset-x-0 bottom-8 text-center text-paper/65 [text-shadow:0_1px_8px_rgba(18,21,31,.8)]">Drag to browse · tap to enlarge</p>
-    </div>
-  );
-}
-
-function Viewer({ photos, index, onIndex, onClose }) {
-  const photo = photos[index];
-  const step = (d) => onIndex((index + d + photos.length) % photos.length);
+function Viewer({ views, active, onPick, onClose }) {
+  const index = views.findIndex((v) => v.key === active.key);
+  const step = (d) => onPick(views[(index + d + views.length) % views.length].key);
 
   useEffect(() => {
     const onKey = (e) => {
@@ -281,34 +199,39 @@ function Viewer({ photos, index, onIndex, onClose }) {
   });
 
   useLayoutEffect(() => {
-    gsap.fromTo('.js-viewer', { opacity: 0 }, { opacity: 1, duration: 0.3, ease: 'power2.out' });
+    gsap.fromTo('.js-viewer', { opacity: 0 }, { opacity: 1, duration: 0.35, ease: 'power2.out' });
   }, []);
 
-  const contain = Math.min(innerWidth, innerHeight * 0.78 * (photo.width / photo.height));
+  const photo = active.photo;
+  const contain = Math.min(innerWidth, innerHeight * 0.76 * (photo.width / photo.height));
 
   return (
-    <div className="js-viewer absolute inset-0 z-50 flex flex-col bg-navy/97 backdrop-blur-sm">
-      <div className="flex items-center justify-between p-4 md:p-6">
-        <p className="label text-paper/70">
-          {String(index + 1).padStart(2, '0')} / {String(photos.length).padStart(2, '0')}
-        </p>
-        <button type="button" onClick={onClose} className="grid size-10 place-items-center rounded-full ring-1 ring-paper/30 transition hover:bg-paper hover:text-navy">
-          ✕
+    <div className="js-viewer absolute inset-0 z-50 flex flex-col bg-ink/97">
+      <div className="flex items-start justify-between p-5 md:p-8">
+        <div>
+          <p className="label-micro text-brass">{active.label} elevation</p>
+          <p className="label-micro mt-1 text-bone/50">{active.altitude} m</p>
+        </div>
+        <button type="button" onClick={onClose} className="label-micro text-bone/70 transition hover:text-bone">
+          Close ✕
         </button>
       </div>
-      <div className="relative flex min-h-0 flex-1 items-center justify-center px-4 pb-6 md:px-20">
-        <img key={photo.id} src={srcAt(photo, widthFor(contain, STILL_WIDTHS))} alt="" className="max-h-full max-w-full rounded-lg object-contain" />
-        {photos.length > 1 &&
-          [['←', -1, 'left-2 md:left-6'], ['→', 1, 'right-2 md:right-6']].map(([glyph, d, pos]) => (
-            <button
-              key={d}
-              type="button"
-              onClick={() => step(d)}
-              className={`absolute top-1/2 grid size-10 -translate-y-1/2 place-items-center rounded-full bg-navy/70 ring-1 ring-paper/25 transition hover:bg-paper hover:text-navy ${pos}`}
-            >
-              {glyph}
-            </button>
-          ))}
+
+      <div className="relative flex min-h-0 flex-1 items-center justify-center px-5 md:px-20">
+        <img key={photo.id} src={srcAt(photo, widthFor(contain, STILL_WIDTHS))} alt="" className="max-h-full max-w-full object-contain" />
+        {[['←', -1, 'left-1 md:left-6'], ['→', 1, 'right-1 md:right-6']].map(([glyph, d, pos]) => (
+          <button key={d} type="button" onClick={() => step(d)} className={`absolute top-1/2 -translate-y-1/2 p-3 text-bone/60 transition hover:text-brass ${pos}`}>
+            {glyph}
+          </button>
+        ))}
+      </div>
+
+      <div className="flex justify-center gap-6 p-5 md:p-8">
+        {views.map((v) => (
+          <button key={v.key} type="button" onClick={() => onPick(v.key)} className="group">
+            <span className={`label-micro transition-colors ${v.key === active.key ? 'text-bone' : 'text-bone/40 group-hover:text-bone/70'}`}>{v.label}</span>
+          </button>
+        ))}
       </div>
     </div>
   );

@@ -1,25 +1,37 @@
 @import 'tailwindcss';
 
-@theme {
-  /* The palette is the logo: one navy, paper around it, and brass for the live marker. */
-  --color-navy: #1b224e;
-  --color-navy-2: #2c3565;
-  --color-ink: #12151f;
-  --color-paper: #f7f5f0;
-  --color-paper-2: #efece4;
-  --color-line: #ddd8cd;
-  --color-muted: #6e7386;
-  --color-brass: #a8834c;
+/* AVHAD — the look.
+   Quiet luxury rather than flash: the photographs carry the page, the interface stays out
+   of their way. Warm paper ground, the logo's navy as ink, one muted brass for anything
+   live, and hairlines instead of boxes. Type is editorial — a light serif at display
+   sizes, a plain sans for interface, a mono for anything factual (dates, headings,
+   compass points), which is the three-register system luxury property brands use. */
 
-  --font-sans: 'Archivo Variable', system-ui, sans-serif;
+@theme {
+  --color-ink: #10152b; /* deepest navy — text on paper, ground behind photographs */
+  --color-navy: #1b224e; /* straight off the logo */
+  --color-navy-soft: #2a3260;
+  --color-navy-glass: #1b224ecc;
+
+  --color-bone: #f3eee6; /* warm paper, never white */
+  --color-bone-dim: #ded7c9;
+  --color-mist: #8b91a6; /* muted secondary on either ground */
+
+  --color-brass: #a9885b; /* the one accent */
+  --color-brass-lit: #c9a876;
+
+  --font-display: 'Cormorant Variable', 'Cormorant Garamond', Georgia, serif;
+  --font-sans: 'Inter Variable', Inter, system-ui, sans-serif;
   --font-mono: 'JetBrains Mono Variable', ui-monospace, monospace;
 
-  /* The page never scrolls, so type keys off whichever of width or height runs out first. */
-  --text-display: clamp(2rem, min(5.2vw, 9vh), 5.5rem);
-  --text-hero: clamp(1.5rem, min(2.6vw, 4.6vh), 3rem);
-  --text-title: clamp(1.0625rem, min(1.35vw, 2.4vh), 1.75rem);
-  --text-label: clamp(0.6875rem, min(0.75vw, 1.33vh), 0.9375rem);
-  --text-micro: clamp(0.625rem, min(0.64vw, 1.14vh), 0.8125rem);
+  /* The page never scrolls, so type keys off whichever of width or height runs out
+     first, and keeps climbing on kiosk-sized displays. */
+  --text-display: clamp(2.5rem, min(7vw, 12vh), 8rem);
+  --text-hero: clamp(1.75rem, min(3.4vw, 6vh), 4.25rem);
+  --text-title: clamp(1.125rem, min(1.6vw, 2.8vh), 2.125rem);
+  --text-body: clamp(0.875rem, min(0.95vw, 1.7vh), 1.125rem);
+  --text-label: clamp(0.625rem, min(0.7vw, 1.24vh), 0.875rem);
+  --text-micro: clamp(0.5625rem, min(0.6vw, 1.07vh), 0.75rem);
 
   --breakpoint-mob: 25rem;
   --breakpoint-sm: 40rem;
@@ -27,13 +39,14 @@
   --breakpoint-lg: 64rem;
   --breakpoint-xl: 80rem;
   --breakpoint-2xl: 96rem;
-  --breakpoint-3xl: 120rem;
-  --breakpoint-4xl: 160rem;
-  --breakpoint-5xl: 240rem;
+  --breakpoint-3xl: 120rem; /* 1920 — the design baseline */
+  --breakpoint-4xl: 160rem; /* 2560 — large monitor */
+  --breakpoint-5xl: 240rem; /* 3840 — 4K wall */
 }
 
 @layer base {
-  /* It never scrolls vertically. Horizontal movement is a drag, handled in JS. */
+  /* It never scrolls vertically. Clip, not hidden: hidden still lets focus or
+     find-in-page shift the page. */
   html,
   body,
   #root {
@@ -45,13 +58,29 @@
   }
 
   body {
-    background: var(--color-paper);
+    background: var(--color-bone);
     color: var(--color-ink);
     font-family: var(--font-sans);
-    font-size: clamp(0.875rem, min(0.95vw, 1.7vh), 1.125rem);
-    line-height: 1.45;
+    font-size: var(--text-body);
+    line-height: 1.5;
     -webkit-font-smoothing: antialiased;
     -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Display type is the serif, set light and tight — the single strongest signal that
+     this is a property brand and not a dashboard. */
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    font-weight: 300;
+    line-height: 1.02;
+    letter-spacing: -0.015em;
+    margin: 0;
+  }
+
+  p {
+    margin: 0;
   }
 
   button {
@@ -67,13 +96,60 @@
     -webkit-user-drag: none;
     user-select: none;
   }
+
+  ::selection {
+    background: var(--color-brass);
+    color: var(--color-bone);
+  }
 }
 
-/* Small caps-ish label, used for dates, compass points and section labels. */
+/* Mono, letter-spaced, upper — dates, compass points, every small caption. */
 @utility label {
   font-family: var(--font-mono);
   font-size: var(--text-label);
-  letter-spacing: 0.14em;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
   font-variant-numeric: tabular-nums;
+}
+
+@utility label-micro {
+  font-family: var(--font-mono);
+  font-size: var(--text-micro);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  font-variant-numeric: tabular-nums;
+}
+
+/* A fine paper tooth over flat colour. Without it a large field of one colour reads as
+   a screen; with it, as stock. Kept under 4% so it is felt rather than seen. */
+@utility grain {
+  position: relative;
+}
+
+@utility grain-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Hairlines carry the layout instead of borders and cards. */
+@utility rule-ink {
+  background: color-mix(in srgb, var(--color-ink) 14%, transparent);
+}
+
+@utility rule-bone {
+  background: color-mix(in srgb, var(--color-bone) 22%, transparent);
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(0.75rem);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
 }

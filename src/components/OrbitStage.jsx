@@ -134,10 +134,12 @@ export function OrbitStage({ orbit, onAngle }) {
       el.style.cursor = 'grab';
       kick();
     };
+    // A mouse wheel turns the orbit too, and it feeds the same momentum the drag uses, so
+    // a flick of the wheel glides to a stop instead of stepping. Bound to the window, not
+    // the canvas: the pointer is often over the scrub bar or the date rail.
     const onWheel = (e) => {
       const d = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
-      s.frame = clamp(s.frame + d * 0.03);
-      s.velocity = 0;
+      s.velocity = Math.max(-4, Math.min(4, s.velocity + d * 0.01));
       setHint(false);
       kick();
     };
@@ -186,7 +188,7 @@ export function OrbitStage({ orbit, onAngle }) {
 
       {ready < 0.999 && (
         <div className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
-          <p className="label rounded-full bg-navy/70 px-4 py-2 text-paper backdrop-blur-sm">Loading orbit · {Math.round(ready * 100)}%</p>
+          <p className="label-micro text-bone/80 [text-shadow:0_1px_10px_rgba(16,21,43,.9)]">Loading orbit · {Math.round(ready * 100)}%</p>
         </div>
       )}
 
@@ -200,8 +202,8 @@ export function OrbitStage({ orbit, onAngle }) {
       >
         <ScrubBar frames={orbit.frames} state={state} />
         {hint && (
-          <p className="label mt-3 text-center text-paper/80 drop-shadow-[0_1px_8px_rgba(18,21,31,.7)]">
-            <span className="animate-pulse">Drag right to orbit the site</span>
+          <p className="label-micro mt-4 text-center text-bone/65 [text-shadow:0_1px_10px_rgba(16,21,43,.9)]">
+            Drag or scroll to turn the building
           </p>
         )}
       </div>
@@ -227,9 +229,9 @@ function ScrubBar({ frames, state }) {
   }, [frames, state]);
 
   return (
-    <div className="relative h-px w-full bg-paper/35">
-      <div ref={fill} className="absolute inset-y-0 left-0 bg-paper" />
-      <span ref={knob} className="absolute top-1/2 size-3 -translate-x-1/2 -translate-y-1/2 rounded-full bg-paper shadow-[0_0_0_4px_rgba(27,34,78,.35)]" />
+    <div className="relative h-px w-full rule-bone">
+      <div ref={fill} className="absolute inset-y-0 left-0 bg-brass" />
+      <span ref={knob} className="absolute top-1/2 size-1.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-brass shadow-[0_0_0_5px_rgba(169,136,91,.18)]" />
     </div>
   );
 }

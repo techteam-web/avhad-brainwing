@@ -1,14 +1,14 @@
 import assets from './assets.json';
 
-// Everything about a project that is not an asset. Captures themselves — their dates, the
-// orbit and the stills grouped by compass view — come from assets.json, which
-// scripts/ingest.mjs writes.
+// Everything about a project that is not an asset. The captures themselves — their dates,
+// the orbit, the 3D scene and the stills grouped by compass view — come from
+// assets.json, which scripts/ingest.mjs writes.
 const META = {
-  homestead: { name: 'Avadh Homestead', place: 'Mahim · Mumbai', blurb: 'Excavation and piling under way' },
-  bayline: { name: 'Avadh Bayline', place: 'Mahim · Mumbai', blurb: 'Piling grid taking shape' },
+  homestead: { name: 'Avhad Homestead', place: 'Mahim · Mumbai', blurb: 'Excavation and piling under way' },
+  bayline: { name: 'Avhad Bayline', place: 'Mahim · Mumbai', blurb: 'Piling grid taking shape' },
 };
 
-// The site is flown every quarter. These are the dates already booked, shown on the
+// The site is flown every quarter. These dates are already booked, and sit on the
 // timeline as upcoming until their folder arrives and ingest fills them in.
 const PLANNED = ['2026-12-10', '2027-03-10', '2027-06-10'];
 
@@ -22,7 +22,7 @@ export const VIEWS = [
 
 export const PROJECTS = Object.entries(META).map(([slug, meta]) => {
   const shot = (assets[slug] ?? []).map((c) => ({ ...c, upcoming: false }));
-  const planned = PLANNED.filter((date) => !shot.some((c) => c.date === date)).map((date) => ({ date, upcoming: true, views: {}, orbit: null }));
+  const planned = PLANNED.filter((date) => !shot.some((c) => c.date === date)).map((date) => ({ date, upcoming: true, views: {}, orbit: null, splat: null }));
   return { slug, ...meta, captures: [...shot, ...planned].sort((a, b) => a.date.localeCompare(b.date)) };
 });
 
@@ -33,10 +33,32 @@ export const monthOf = (date) => MONTHS[Number(date.slice(5, 7)) - 1];
 export const yearOf = (date) => date.slice(0, 4);
 export const longDate = (date) => `${Number(date.slice(8, 10))} ${monthOf(date)} ${yearOf(date)}`;
 
-// The stills of one capture, in a fixed view order, skipping views with nothing in them.
-export const viewsOf = (capture) => VIEWS.filter((v) => capture.views?.[v.key]?.length).map((v) => ({ ...v, photos: capture.views[v.key] }));
+// ONE photograph per compass point, not a pile of them — and the four sides are picked at
+// as near the same altitude as the capture allows, so switching between them reads as the
+// camera swinging round the site rather than jumping up and down.
+//
+// The flight decides how well that works. September 2026 at Homestead was flown high on
+// the north and east sides (165 m) and much lower on the south and west (108–115 m), so
+// those four cannot match; Bayline's agree within about 16 m. Holding one altitude per
+// side on future flights is what would make this exact.
+const median = (list) => [...list].sort((a, b) => a - b)[Math.floor(list.length / 2)];
+
+export function viewsOf(capture) {
+  const sides = VIEWS.filter((v) => v.key !== 'top' && capture.views?.[v.key]?.length);
+  // Aim for the altitude the sides agree on best: the median of each side's highest shot.
+  const target = sides.length ? median(sides.map((v) => Math.max(...capture.views[v.key].map((p) => p.altitude ?? 0)))) : 0;
+
+  return VIEWS.filter((v) => capture.views?.[v.key]?.length).map((v) => {
+    const photos = capture.views[v.key];
+    const photo =
+      v.key === 'top'
+        ? photos.reduce((best, p) => ((p.altitude ?? 0) > (best.altitude ?? 0) ? p : best)) // the widest overhead
+        : photos.reduce((best, p) => (Math.abs((p.altitude ?? 0) - target) < Math.abs((best.altitude ?? 0) - target) ? p : best));
+    return { ...v, photo, altitude: Math.round(photo.altitude ?? 0) };
+  });
+}
 
 export const coverOf = (project) => {
   const capture = project.captures.find((c) => !c.upcoming);
-  return capture?.views?.top?.[0] ?? Object.values(capture?.views ?? {})[0]?.[0] ?? null;
+  return capture ? (viewsOf(capture)[0]?.photo ?? null) : null;
 };

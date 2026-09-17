@@ -118,35 +118,34 @@ export function SplatStage({ splat }) {
 
       {!ready && !failed && (
         <div className="pointer-events-none absolute inset-0 grid place-items-center">
-          <p className="label rounded-full bg-navy/70 px-4 py-2 text-paper backdrop-blur-sm">Building 3D scene · {progress}%</p>
+          <p className="label-micro text-bone/80 [text-shadow:0_1px_10px_rgba(16,21,43,.9)]">Building 3D scene · {progress}%</p>
         </div>
       )}
 
       {failed && (
         <div className="absolute inset-0 grid place-items-center px-6">
-          <p className="label max-w-sm text-center text-paper/80">{failed}</p>
+          <p className="label-micro max-w-sm text-center text-bone/70">{failed}</p>
         </div>
       )}
 
       {ready && (
         <>
-          {/* clear of the capture-date dots, which sit at bottom-20 on a phone */}
-          <div className="absolute inset-x-0 bottom-32 z-20 flex justify-center px-4 md:bottom-10">
-            <div className="flex gap-1 rounded-full bg-navy/50 p-1 ring-1 ring-paper/20 backdrop-blur-md">
-              {VIEWS.map((v) => (
-                <button
-                  key={v.key}
-                  type="button"
-                  onClick={() => pick(v)}
-                  className={`label rounded-full px-3 py-2 transition md:px-4 ${view === v.key ? 'bg-paper text-navy' : 'text-paper/75 hover:text-paper'}`}
+          {/* clear of the capture dates, which sit at bottom-16 on a phone */}
+          <div className="absolute inset-x-0 bottom-28 z-20 flex justify-center gap-5 px-4 md:bottom-14 md:gap-7">
+            {VIEWS.map((v) => (
+              <button key={v.key} type="button" onClick={() => pick(v)} className="group py-1">
+                <span
+                  className={`label-micro transition-colors duration-300 [text-shadow:0_1px_10px_rgba(16,21,43,.9)] ${
+                    view === v.key ? 'text-brass' : 'text-bone/45 group-hover:text-bone/80'
+                  }`}
                 >
                   {v.key === 'orbit' ? 'Top' : v.label}
-                </button>
-              ))}
-            </div>
+                </span>
+              </button>
+            ))}
           </div>
-          <p className="label pointer-events-none absolute inset-x-0 bottom-8 text-center text-paper/60 [text-shadow:0_1px_8px_rgba(18,21,31,.85)] max-md:hidden">
-            Drag to turn · scroll to zoom · right-drag to pan
+          <p className="label-micro pointer-events-none absolute inset-x-0 bottom-6 text-center text-bone/45 [text-shadow:0_1px_10px_rgba(16,21,43,.9)] max-md:hidden">
+            Drag to turn · scroll to zoom
           </p>
         </>
       )}
