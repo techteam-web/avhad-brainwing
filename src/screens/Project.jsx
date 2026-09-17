@@ -3,7 +3,6 @@ import { Link, Navigate, useParams } from 'react-router-dom';
 import gsap from 'gsap';
 import { Brainwing } from '../components/Brainwing';
 import { OrbitStage } from '../components/OrbitStage';
-import { SplatStage } from '../components/SplatStage';
 import { getProject, longDate, monthOf, viewsOf, yearOf } from '../data/projects';
 import { srcAt, widthFor } from '../lib/images';
 import logo from '../assets/avhad-logo.svg';
@@ -11,7 +10,6 @@ import logo from '../assets/avhad-logo.svg';
 const STILL_WIDTHS = [640, 1280, 1920];
 const MODES = [
   { key: 'orbit', label: 'Orbit' },
-  { key: 'splat', label: '3D' },
   { key: 'views', label: 'Views' },
 ];
 
@@ -33,15 +31,15 @@ function ProjectView({ project }) {
   const views = useMemo(() => viewsOf(capture), [capture]);
   const active = views.find((v) => v.key === view) ?? views[0];
 
-  const { orbit, splat } = capture;
-  const stage = mode === 'views' ? 'views' : mode === 'orbit' && orbit ? 'orbit' : mode === 'splat' && splat ? 'splat' : 'missing';
+  const { orbit } = capture;
+  // A capture may not have been flown as an orbit; the stills are always there.
+  const stage = mode === 'views' ? 'views' : orbit ? 'orbit' : 'missing';
 
   return (
     <main className="relative h-dvh w-full overflow-clip bg-ink text-bone">
       {stage === 'orbit' && <OrbitStage orbit={orbit} />}
-      {stage === 'splat' && <SplatStage splat={splat} />}
       {stage === 'views' && <Views views={views} active={active} onOpen={() => setOpen(true)} />}
-      {stage === 'missing' && <Missing mode={mode} date={capture.date} onViews={() => setMode('views')} />}
+      {stage === 'missing' && <Missing date={capture.date} onViews={() => setMode('views')} />}
 
       {/* masthead */}
       <header className="pointer-events-none absolute inset-x-0 top-0 z-30 flex items-start justify-between gap-4 p-5 md:p-8 3xl:p-10">
@@ -130,18 +128,13 @@ function Views({ views, active, onOpen }) {
   );
 }
 
-function Missing({ mode, date, onViews }) {
-  const copy = {
-    orbit: ['The orbit follows', 'This visit was photographed; the orbit flight comes with the next one.'],
-    splat: ['No 3D scene for this visit', 'It is reconstructed from the orbit footage, so it follows once that is flown.'],
-  }[mode] ?? ['Nothing here yet', ''];
-
+function Missing({ date, onViews }) {
   return (
     <div className="absolute inset-0 grid place-items-center px-6">
       <div className="max-w-md text-center">
         <p className="label-micro text-brass">{longDate(date)}</p>
-        <h2 className="mt-4 font-display text-hero font-light leading-tight text-bone">{copy[0]}</h2>
-        <p className="mx-auto mt-3 max-w-sm text-bone/55">{copy[1]}</p>
+        <h2 className="mt-4 font-display text-hero font-light leading-tight text-bone">The orbit follows</h2>
+        <p className="mx-auto mt-3 max-w-sm text-bone/55">This visit was photographed; the orbit flight comes with the next one.</p>
         <button type="button" onClick={onViews} className="label-micro group mt-7 inline-flex items-center gap-2 text-bone">
           <span className="h-px w-6 bg-brass transition-all duration-500 group-hover:w-10" />
           See the photographs

@@ -12,8 +12,8 @@ const URL = process.env.URL ?? 'http://localhost:5190';
 const OUT = process.env.OUT ?? '.cache/shots';
 await mkdir(OUT, { recursive: true });
 
-// HEADED=1 runs a real window on the real GPU: headless Chromium falls back to software
-// WebGL, which cannot render some things (Gaussian splats among them).
+// HEADED=1 runs a real window on the real GPU. Headless Chromium falls back to software
+// WebGL, which renders some GPU-heavy pages incorrectly or not at all.
 const browser = await chromium.launch({ headless: !process.env.HEADED });
 const errors = [];
 

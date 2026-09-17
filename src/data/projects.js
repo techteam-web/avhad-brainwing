@@ -22,7 +22,7 @@ export const VIEWS = [
 
 export const PROJECTS = Object.entries(META).map(([slug, meta]) => {
   const shot = (assets[slug] ?? []).map((c) => ({ ...c, upcoming: false }));
-  const planned = PLANNED.filter((date) => !shot.some((c) => c.date === date)).map((date) => ({ date, upcoming: true, views: {}, orbit: null, splat: null }));
+  const planned = PLANNED.filter((date) => !shot.some((c) => c.date === date)).map((date) => ({ date, upcoming: true, views: {}, orbit: null }));
   return { slug, ...meta, captures: [...shot, ...planned].sort((a, b) => a.date.localeCompare(b.date)) };
 });
 

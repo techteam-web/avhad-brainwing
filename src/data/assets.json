@@ -219,28 +219,6 @@
             "lqip": "data:image/webp;base64,UklGRpIAAABXRUJQVlA4IIYAAABwBACdASoUAAsAPu1iqU2ppaOiMAgBMB2JYgC7MoGv/gOAnwNcKN+rdvZBAAD91A2auIL9Z+oI4XyN+BqFA3dcKW5AIalOHdZvwCEb8PqoPOpEm3C1Xc5ZO/pWZOnr6QIw8IZ2iVfFAXqEZAsRKBWoCc+qi1CL0th4IYgQEPOZeSWmMAAAAA=="
           }
         ]
-      },
-      "splat": {
-        "src": "/assets/homestead/2026-09-10/splat/site.ksplat",
-        "light": "/assets/homestead/2026-09-10/splat/site-light.ksplat",
-        "scene": {
-          "center": [
-            -0.062,
-            2.013,
-            2.673
-          ],
-          "up": [
-            -0.181,
-            -0.745,
-            -0.642
-          ],
-          "camera": [
-            0.15,
-            2.258,
-            -1.825
-          ],
-          "radius": 5.038
-        }
       }
     }
   ],

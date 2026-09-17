@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import gsap from 'gsap';
 import { coverRect, preload, srcAt, widthFor } from '../lib/images';
 
 // The orbit, scrubbed by hand. The frames are drawn into a canvas rather than swapped as
@@ -11,12 +12,13 @@ import { coverRect, preload, srcAt, widthFor } from '../lib/images';
 
 const WIDTHS = [640, 1280];
 const SENSITIVITY = 1; // one drag across the full screen width = one full turn
+const IDLE = 7000; // how long a still hand waits before the prompt returns
 
-export function OrbitStage({ orbit, onAngle }) {
+export function OrbitStage({ orbit }) {
   const canvas = useRef(null);
   const state = useRef({ frame: 0, velocity: 0, dragging: false, loaded: new Set() });
   const [ready, setReady] = useState(0); // 0..1, how much of the orbit has arrived
-  const [hint, setHint] = useState(true);
+  const [prompt, setPrompt] = useState(false);
 
   useEffect(() => {
     const el = canvas.current;
@@ -31,6 +33,15 @@ export function OrbitStage({ orbit, onAngle }) {
     let raf = 0;
     let dpr = 1;
 
+    // The prompt appears when nothing has been touched for a while, and leaves the moment
+    // it is.
+    let idleTimer = setTimeout(() => alive && setPrompt(true), 2200);
+    const touched = () => {
+      setPrompt(false);
+      clearTimeout(idleTimer);
+      idleTimer = setTimeout(() => alive && setPrompt(true), IDLE);
+    };
+
     const sizeCanvas = () => {
       dpr = Math.min(devicePixelRatio || 1, 2);
       el.width = Math.round(innerWidth * dpr);
@@ -40,7 +51,6 @@ export function OrbitStage({ orbit, onAngle }) {
       draw();
     };
 
-    // The nearest loaded frame, so there is always something to show.
     const nearest = (i) => {
       for (let d = 0; d < total; d++) {
         if (i - d >= 0 && s.loaded.has(i - d)) return i - d;
@@ -52,7 +62,7 @@ export function OrbitStage({ orbit, onAngle }) {
     const draw = () => {
       const i = nearest(clamp(Math.round(s.frame)));
       if (i < 0) return;
-      const img = imgOf(i);
+      const img = elements.get(i);
       if (!img) return;
       const { W, H, left, top } = coverRect(el.width, el.height, img.naturalWidth / img.naturalHeight);
       ctx.drawImage(img, left, top, W, H);
@@ -60,7 +70,6 @@ export function OrbitStage({ orbit, onAngle }) {
 
     // preload() hands back a promise; keep the decoded element beside it for drawing.
     const elements = new Map();
-    const imgOf = (i) => elements.get(i);
     const load = async (i) => {
       const k = clamp(i);
       if (elements.has(k)) return;
@@ -90,7 +99,6 @@ export function OrbitStage({ orbit, onAngle }) {
           s.velocity = 0;
           s.frame = clamp(Math.round(s.frame));
           draw();
-          onAngle?.(clamp(Math.round(s.frame)), total);
           raf = 0;
           return;
         }
@@ -100,7 +108,6 @@ export function OrbitStage({ orbit, onAngle }) {
       if (held !== s.frame) s.velocity = 0;
       s.frame = held;
       draw();
-      onAngle?.(Math.round(s.frame), total);
       raf = requestAnimationFrame(step);
     };
     const kick = () => {
@@ -114,7 +121,7 @@ export function OrbitStage({ orbit, onAngle }) {
       last = e.clientX;
       el.setPointerCapture(e.pointerId);
       el.style.cursor = 'grabbing';
-      setHint(false);
+      touched();
       kick();
     };
     const onMove = (e) => {
@@ -134,19 +141,18 @@ export function OrbitStage({ orbit, onAngle }) {
       el.style.cursor = 'grab';
       kick();
     };
-    // A mouse wheel turns the orbit too, and it feeds the same momentum the drag uses, so
-    // a flick of the wheel glides to a stop instead of stepping. Bound to the window, not
-    // the canvas: the pointer is often over the scrub bar or the date rail.
+    // A mouse wheel turns the orbit too, feeding the same momentum, and bound to the
+    // window because the pointer is often over the date rail or the header.
     const onWheel = (e) => {
       const d = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
       s.velocity = Math.max(-4, Math.min(4, s.velocity + d * 0.01));
-      setHint(false);
+      touched();
       kick();
     };
     const onKey = (e) => {
       if (!['ArrowLeft', 'ArrowRight'].includes(e.key)) return;
       s.frame = clamp(s.frame + (e.key === 'ArrowRight' ? 1 : -1));
-      setHint(false);
+      touched();
       kick();
     };
 
@@ -154,7 +160,7 @@ export function OrbitStage({ orbit, onAngle }) {
     el.addEventListener('pointermove', onMove);
     el.addEventListener('pointerup', onUp);
     el.addEventListener('pointercancel', onUp);
-    el.addEventListener('wheel', onWheel, { passive: true });
+    addEventListener('wheel', onWheel, { passive: true });
     addEventListener('keydown', onKey);
     addEventListener('resize', sizeCanvas);
     sizeCanvas();
@@ -162,76 +168,88 @@ export function OrbitStage({ orbit, onAngle }) {
 
     return () => {
       alive = false;
+      clearTimeout(idleTimer);
       cancelAnimationFrame(raf);
       el.removeEventListener('pointerdown', onDown);
       el.removeEventListener('pointermove', onMove);
       el.removeEventListener('pointerup', onUp);
       el.removeEventListener('pointercancel', onUp);
-      el.removeEventListener('wheel', onWheel);
+      removeEventListener('wheel', onWheel);
       removeEventListener('keydown', onKey);
       removeEventListener('resize', sizeCanvas);
     };
-  }, [orbit, onAngle]);
-
-  // Dragging the scrub bar drives the same frame counter.
-  const scrub = (e) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const t = Math.min(Math.max((e.clientX - rect.left) / rect.width, 0), 1);
-    state.current.frame = t * (orbit.frames - 1);
-    state.current.velocity = 0;
-    setHint(false);
-  };
+  }, [orbit]);
 
   return (
     <>
       <canvas ref={canvas} className="absolute inset-0 h-full w-full cursor-grab touch-none" style={{ backgroundImage: `url(${orbit.lqip})`, backgroundSize: 'cover', backgroundPosition: 'center' }} />
 
       {ready < 0.999 && (
-        <div className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
-          <p className="label-micro text-bone/80 [text-shadow:0_1px_10px_rgba(16,21,43,.9)]">Loading orbit · {Math.round(ready * 100)}%</p>
+        <div className="pointer-events-none absolute inset-x-0 bottom-8 z-20 text-center">
+          <p className="label-micro text-bone/70 [text-shadow:0_1px_10px_rgba(16,21,43,.9)]">Loading orbit · {Math.round(ready * 100)}%</p>
         </div>
       )}
 
-      <div
-        className="absolute inset-x-0 bottom-0 z-20 cursor-ew-resize px-5 pb-6 pt-10 md:px-10 md:pb-8"
-        onPointerDown={(e) => {
-          e.currentTarget.setPointerCapture(e.pointerId);
-          scrub(e);
-        }}
-        onPointerMove={(e) => e.currentTarget.hasPointerCapture?.(e.pointerId) && scrub(e)}
-      >
-        <ScrubBar frames={orbit.frames} state={state} />
-        {hint && (
-          <p className="label-micro mt-4 text-center text-bone/65 [text-shadow:0_1px_10px_rgba(16,21,43,.9)]">
-            Drag or scroll to turn the building
-          </p>
-        )}
-      </div>
+      <DragPrompt show={prompt && ready > 0.1} />
     </>
   );
 }
 
-// Reads the frame counter straight off the shared ref each frame, so the bar never causes
-// a React render while the orbit is moving.
-function ScrubBar({ frames, state }) {
-  const fill = useRef(null);
-  const knob = useRef(null);
+// Shown when the orbit has been sitting untouched. A wash breathes up out of the
+// photograph so the mark reads against it, a hand travels left to right, and both fade
+// away — then it waits and asks again.
+function DragPrompt({ show }) {
+  const wash = useRef(null);
+  const hand = useRef(null);
+  const copy = useRef(null);
+
   useEffect(() => {
-    let raf = 0;
-    const tick = () => {
-      const t = (Math.min(Math.max(state.current.frame, 0), frames - 1) / (frames - 1)) * 100;
-      if (fill.current) fill.current.style.width = `${t}%`;
-      if (knob.current) knob.current.style.left = `${t}%`;
-      raf = requestAnimationFrame(tick);
-    };
-    raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
-  }, [frames, state]);
+    if (!show) return undefined;
+    const tl = gsap.timeline({ repeat: -1, repeatDelay: 4.5 });
+    tl.fromTo(wash.current, { opacity: 0 }, { opacity: 1, duration: 1.3, ease: 'sine.inOut' })
+      .fromTo(copy.current, { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.9, ease: 'expo.out' }, '<0.2')
+      .fromTo(hand.current, { x: -90, opacity: 0 }, { x: -90, opacity: 1, duration: 0.5, ease: 'power2.out' }, '<')
+      .to(hand.current, { x: 90, duration: 2.1, ease: 'power2.inOut' })
+      .to(hand.current, { opacity: 0, duration: 0.5, ease: 'power2.in' })
+      .to([wash.current, copy.current], { opacity: 0, duration: 1, ease: 'sine.inOut' }, '<0.1');
+    return () => tl.kill();
+  }, [show]);
+
+  if (!show) return null;
 
   return (
-    <div className="relative h-px w-full rule-bone">
-      <div ref={fill} className="absolute inset-y-0 left-0 bg-brass" />
-      <span ref={knob} className="absolute top-1/2 size-1.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-brass shadow-[0_0_0_5px_rgba(169,136,91,.18)]" />
+    <div className="pointer-events-none absolute inset-0 z-20">
+      <div
+        ref={wash}
+        className="absolute inset-0 opacity-0"
+        style={{ background: 'radial-gradient(75% 60% at 50% 55%, rgba(16,21,43,.62) 0%, rgba(16,21,43,.3) 45%, rgba(16,21,43,0) 78%)' }}
+      />
+
+      <div className="absolute inset-x-0 top-1/2 -translate-y-1/2">
+        <div className="relative mx-auto h-14 w-65 md:w-80">
+          <span className="absolute inset-x-0 top-1/2 h-px -translate-y-1/2 rule-bone" />
+          <span ref={hand} className="absolute left-1/2 top-1/2 flex -translate-x-1/2 -translate-y-1/2 items-center gap-4">
+            <svg viewBox="0 0 24 24" className="size-3.5 text-bone/50" fill="none" stroke="currentColor" strokeWidth="1.5">
+              <path d="M15 5 8 12l7 7" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+            {/* the hand itself — a grab mark, not a system cursor */}
+            <span className="grid size-12 place-items-center rounded-full border border-bone/70 bg-ink/35">
+              <svg viewBox="0 0 24 24" className="size-6 text-bone" fill="none" stroke="currentColor" strokeWidth="1.3">
+                <path
+                  d="M9 11V6.5a1.5 1.5 0 0 1 3 0V11m0-1.5a1.5 1.5 0 0 1 3 0V12m0-1a1.5 1.5 0 0 1 3 0v4.5a5.5 5.5 0 0 1-5.5 5.5h-1A5.5 5.5 0 0 1 6 15.5V13a1.5 1.5 0 0 1 3 0"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </span>
+            <svg viewBox="0 0 24 24" className="size-3.5 text-bone/50" fill="none" stroke="currentColor" strokeWidth="1.5">
+              <path d="m9 5 7 7-7 7" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </span>
+        </div>
+
+        <p ref={copy} className="label-micro mt-7 text-center text-bone/85 opacity-0">Drag or scroll to turn the orbit</p>
+      </div>
     </div>
   );
 }
