@@ -24,6 +24,7 @@ function ProjectView({ project }) {
   const shot = project.captures.filter((c) => !c.upcoming);
   const [date, setDate] = useState(shot.at(-1)?.date ?? project.captures[0].date);
   const [mode, setMode] = useState('orbit');
+  const [mounted, setMounted] = useState({ views: false });
   const [view, setView] = useState('top');
   const [open, setOpen] = useState(false);
 
@@ -42,11 +43,58 @@ function ProjectView({ project }) {
     gsap.fromTo(root.current, { opacity: 0 }, { opacity: 1, duration: 0.5, ease: 'power2.out' });
   }, []);
 
+  // Changing stage: the two are stacked and cross-faded, with a brass hairline drawn
+  // across in the direction of the tab. The stills only mount once they are first asked
+  // for, and then stay, so the change is instant from the second time on.
+  const orbitRef = useRef(null);
+  const viewsRef = useRef(null);
+  const sweep = useRef(null);
+  const previous = useRef(mode);
+
+  const go = (key) => {
+    setMode(key);
+    if (key === 'views') setMounted((m) => (m.views ? m : { views: true }));
+  };
+
+  useLayoutEffect(() => {
+    if (previous.current === mode) return;
+    const toViews = mode === 'views';
+    previous.current = mode;
+    const incoming = toViews ? viewsRef.current : orbitRef.current;
+    const outgoing = toViews ? orbitRef.current : viewsRef.current;
+    if (!incoming || !outgoing) return;
+
+    gsap
+      .timeline()
+      .set(incoming, { zIndex: 2 })
+      .set(outgoing, { zIndex: 1 })
+      .fromTo(incoming, { opacity: 0, scale: 1.035 }, { opacity: 1, scale: 1, duration: 0.9, ease: 'expo.out' }, 0)
+      .to(outgoing, { opacity: 0, scale: 0.995, duration: 0.55, ease: 'power2.inOut' }, 0)
+      .fromTo(
+        sweep.current,
+        { x: toViews ? 0 : innerWidth, opacity: 1 },
+        { x: toViews ? innerWidth : 0, duration: 0.85, ease: 'power2.inOut' },
+        0,
+      )
+      .set(sweep.current, { opacity: 0 });
+  }, [mode]);
+
   return (
     <main ref={root} className="relative h-dvh w-full overflow-clip bg-ink text-bone">
-      {stage === 'orbit' && <OrbitStage orbit={orbit} />}
-      {stage === 'views' && <Views views={views} active={active} onOpen={() => setOpen(true)} />}
-      {stage === 'missing' && <Missing date={capture.date} onViews={() => setMode('views')} />}
+      {orbit && (
+        <div ref={orbitRef} className={`absolute inset-0 ${mode === 'orbit' ? '' : 'pointer-events-none'}`}>
+          <OrbitStage orbit={orbit} active={mode === 'orbit'} />
+        </div>
+      )}
+      {mounted.views && (
+        <div ref={viewsRef} className={`absolute inset-0 ${mode === 'views' ? '' : 'pointer-events-none'}`}>
+          <Views views={views} active={active} onOpen={() => setOpen(true)} />
+        </div>
+      )}
+      {stage === 'missing' && <Missing date={capture.date} onViews={() => go('views')} />}
+
+      {/* a brass hairline drawn across the change, in the direction of the tab */}
+      <span ref={sweep} className="pointer-events-none absolute inset-y-0 left-0 z-40 w-px bg-brass opacity-0 shadow-[0_0_24px_6px_rgba(169,136,91,.35)]" />
 
       {/* masthead */}
       <header className="pointer-events-none absolute inset-x-0 top-0 z-30 flex items-start justify-between gap-4 p-5 md:p-8 3xl:p-10">
@@ -76,7 +124,7 @@ function ProjectView({ project }) {
       <div className="absolute left-1/2 top-4 z-30 flex -translate-x-1/2 flex-col items-center rounded-2xl bg-ink/45 px-6 py-2.5 md:top-7 3xl:top-9">
         <nav className="flex items-center gap-6 md:gap-9">
           {MODES.map((m) => (
-            <button key={m.key} type="button" onClick={() => setMode(m.key)} className="group relative pb-1.5">
+            <button key={m.key} type="button" onClick={() => go(m.key)} className="group relative pb-1.5">
               <span className={`label transition-colors duration-300 ${mode === m.key ? 'text-bone' : 'text-bone/65 group-hover:text-bone/90'}`}>{m.label}</span>
               <span className={`absolute inset-x-0 bottom-0 h-px origin-center transition-transform duration-500 ${mode === m.key ? 'scale-x-100 bg-brass' : 'scale-x-0 bg-bone/40'}`} />
             </button>

@@ -14,11 +14,18 @@ const WIDTHS = [640, 1280];
 const SENSITIVITY = 1; // one drag across the full screen width = one full turn
 const IDLE = 7000; // how long a still hand waits before the prompt returns
 
-export function OrbitStage({ orbit }) {
+export function OrbitStage({ orbit, active = true }) {
   const canvas = useRef(null);
   const state = useRef({ frame: 0, velocity: 0, dragging: false, loaded: new Set() });
   const [ready, setReady] = useState(0); // 0..1, how much of the orbit has arrived
   const [prompt, setPrompt] = useState(false);
+
+  // The orbit stays mounted behind the stills so switching back does not reload 96
+  // frames — but while it is behind them it must not answer the wheel or the keyboard.
+  const live = useRef(active);
+  useEffect(() => {
+    live.current = active;
+  }, [active]);
 
   useEffect(() => {
     const el = canvas.current;
@@ -35,11 +42,11 @@ export function OrbitStage({ orbit }) {
 
     // The prompt appears when nothing has been touched for a while, and leaves the moment
     // it is.
-    let idleTimer = setTimeout(() => alive && setPrompt(true), 2200);
+    let idleTimer = setTimeout(() => alive && live.current && setPrompt(true), 2200);
     const touched = () => {
       setPrompt(false);
       clearTimeout(idleTimer);
-      idleTimer = setTimeout(() => alive && setPrompt(true), IDLE);
+      idleTimer = setTimeout(() => alive && live.current && setPrompt(true), IDLE);
     };
 
     const sizeCanvas = () => {
@@ -144,13 +151,14 @@ export function OrbitStage({ orbit }) {
     // A mouse wheel turns the orbit too, feeding the same momentum, and bound to the
     // window because the pointer is often over the date rail or the header.
     const onWheel = (e) => {
+      if (!live.current) return;
       const d = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
       s.velocity = Math.max(-4, Math.min(4, s.velocity + d * 0.01));
       touched();
       kick();
     };
     const onKey = (e) => {
-      if (!['ArrowLeft', 'ArrowRight'].includes(e.key)) return;
+      if (!live.current || !['ArrowLeft', 'ArrowRight'].includes(e.key)) return;
       s.frame = clamp(s.frame + (e.key === 'ArrowRight' ? 1 : -1));
       touched();
       kick();
@@ -190,7 +198,9 @@ export function OrbitStage({ orbit }) {
         </div>
       )}
 
-      <DragPrompt show={prompt && ready > 0.1} />
+      {/* gated on `active` here rather than reset in an effect: while the stills are up,
+          the prompt simply is not rendered */}
+      <DragPrompt show={active && prompt && ready > 0.1} />
     </>
   );
 }
