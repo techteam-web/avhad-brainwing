@@ -72,6 +72,39 @@ function telemetry(buf) {
   return { altitude: read('RelativeAltitude'), pitch: read('GimbalPitchDegree'), yaw: read('GimbalYawDegree') };
 }
 
+// How much closer a frame looks than the wide lens would show it: the lens's focal length
+// against the 28 mm wide camera (EXIF 0xA405 — the Mavic has a 70 mm too), times any
+// in-camera digital zoom (0xA404). A 2x frame from 165 m looks like it was taken from about
+// 80 m, so without this, altitude alone lies about how close a photograph looks.
+function zoomOf(exifBuf) {
+  if (!exifBuf) return 1;
+  const buf = exifBuf.subarray(6); // past "Exif\0\0"
+  const le = buf.toString('ascii', 0, 2) === 'II';
+  const u16 = (o) => (le ? buf.readUInt16LE(o) : buf.readUInt16BE(o));
+  const u32 = (o) => (le ? buf.readUInt32LE(o) : buf.readUInt32BE(o));
+  let zoom = 1;
+  let lens = 28;
+  const walk = (off) => {
+    for (let i = 0, n = u16(off); i < n; i++) {
+      const e = off + 2 + i * 12;
+      const tag = u16(e);
+      if (tag === 0x8769) walk(u32(e + 8)); // into the Exif sub-IFD
+      if (tag === 0xa404) {
+        const p = u32(e + 8);
+        const den = u32(p + 4);
+        if (den) zoom = u32(p) / den;
+      }
+      if (tag === 0xa405) lens = u16(e + 8) || 28;
+    }
+  };
+  try {
+    walk(u32(4));
+  } catch {
+    return 1;
+  }
+  return (zoom || 1) * (lens / 28);
+}
+
 const time = (file) => {
   const m = file.match(/DJI_\d{8}(\d{2})(\d{2})(\d{2})/);
   return m ? `${m[1]}:${m[2]}:${m[3]}` : null;
@@ -111,6 +144,8 @@ async function stills(capture) {
       height: meta.height,
       time: time(file),
       altitude: tel.altitude,
+      pitch: tel.pitch,
+      zoom: +zoomOf(meta.exif).toFixed(2),
       lqip: `data:image/webp;base64,${lqip.toString('base64')}`,
     });
   }

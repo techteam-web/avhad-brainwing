@@ -54,29 +54,40 @@ export const longDate = (date) => `${Number(date.slice(8, 10))} ${monthOf(date)}
 const FULL = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 export const monthYear = (date) => `${FULL[Number(date.slice(5, 7)) - 1]} ${yearOf(date)}`;
 
-// ONE photograph per compass point, not a pile of them — and the four sides are picked at
-// as near the same altitude as the capture allows, so switching between them reads as the
-// camera swinging round the site rather than jumping up and down.
+// ONE photograph per compass point, and all five taken from as near the same distance as
+// the flight allows, so switching between them reads as the camera swinging round the
+// site rather than jumping in and out.
 //
-// The flight decides how well that works. September 2026 at Homestead was flown high on
-// the north and east sides (165 m) and much lower on the south and west (108–115 m), so
-// those four cannot match; Bayline's agree within about 16 m. Holding one altitude per
-// side on future flights is what would make this exact.
-const median = (list) => [...list].sort((a, b) => a - b)[Math.floor(list.length / 2)];
+// Altitude alone is not that distance. The camera looks down at an angle, and DJI can
+// shoot at 2x digital zoom — a 2x frame from 165 m looks like it was taken from 80 m. So
+// each photo is measured by how far away it LOOKS: the line of sight to the ground,
+// divided by the zoom.
+const apparent = (p) => {
+  const tilt = Math.abs(p.pitch ?? -90) * (Math.PI / 180);
+  return (p.altitude ?? 0) / Math.max(Math.sin(tilt), 0.3) / (p.zoom ?? 1);
+};
 
 export function viewsOf(capture) {
-  const sides = VIEWS.filter((v) => v.key !== 'top' && capture.views?.[v.key]?.length);
-  // Aim for the altitude the sides agree on best: the median of each side's highest shot.
-  const target = sides.length ? median(sides.map((v) => Math.max(...capture.views[v.key].map((p) => p.altitude ?? 0)))) : 0;
+  const present = VIEWS.filter((v) => capture.views?.[v.key]?.length);
+  // Near-identical frames (a burst a few seconds apart) should not trade places over a
+  // metre, so a later frame has to be clearly closer to win.
+  const off = (p, target) => Math.abs(Math.log(apparent(p) / target));
+  const pick = (list, target) => list.reduce((best, p) => (off(p, target) < off(best, target) - 0.01 ? p : best));
 
-  return VIEWS.filter((v) => capture.views?.[v.key]?.length).map((v) => {
-    const photos = capture.views[v.key];
-    const photo =
-      v.key === 'top'
-        ? photos.reduce((best, p) => ((p.altitude ?? 0) > (best.altitude ?? 0) ? p : best)) // the widest overhead
-        : photos.reduce((best, p) => (Math.abs((p.altitude ?? 0) - target) < Math.abs((best.altitude ?? 0) - target) ? p : best));
-    return { ...v, photo, altitude: Math.round(photo.altitude ?? 0) };
-  });
+  // Try every photo's distance as the target and keep the set whose nearest and farthest
+  // frames differ least — and when the extremes are fixed (one side only has far shots),
+  // the one whose other frames sit closest to the middle of them.
+  let chosen = null;
+  let best = Infinity;
+  for (const target of present.flatMap((v) => capture.views[v.key].map(apparent))) {
+    const set = present.map((v) => pick(capture.views[v.key], target));
+    const d = set.map(apparent);
+    const mid = Math.sqrt(Math.max(...d) * Math.min(...d));
+    const score = Math.log(Math.max(...d) / Math.min(...d)) + 0.25 * d.reduce((a, x) => a + Math.abs(Math.log(x / mid)), 0) / d.length;
+    if (score < best - 1e-9) [best, chosen] = [score, set];
+  }
+
+  return present.map((v, i) => ({ ...v, photo: chosen[i], altitude: Math.round(chosen[i].altitude ?? 0) }));
 }
 
 export const coverOf = (project) => {
