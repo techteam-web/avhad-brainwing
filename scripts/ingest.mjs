@@ -31,6 +31,11 @@ const OUT = join(ROOT, 'public/assets');
 const TMP = join(ROOT, '.cache/frames');
 const MANIFEST = join(ROOT, 'src/data/assets.json');
 
+// Retouched photographs come back from the editor under their original camera names, and
+// exports can strip the drone's metadata. So a retouched file supplies only the pixels:
+// the view, altitude and angle are still read from the original beside it.
+const REVISED = '/Users/Arsalan/Downloads/avhad-asset';
+
 const CAPTURES = [
   {
     slug: 'homestead',
@@ -129,14 +134,19 @@ async function stills(capture) {
   const views = {};
   let bytes = 0;
 
+  const revised = new Set(await readdir(REVISED).catch(() => []));
+  let retouched = 0;
+
   for (const [i, file] of files.entries()) {
-    const buf = await readFile(join(capture.dir, file));
+    const buf = await readFile(join(capture.dir, file)); // the original: telemetry comes from here
+    const pixels = revised.has(file) ? await readFile(join(REVISED, file)) : buf;
+    if (pixels !== buf) retouched++;
     const meta = await sharp(buf).metadata();
     const tel = telemetry(buf);
     const view = viewOf(tel);
     const n = String(i + 1).padStart(2, '0');
-    bytes += await ladder(buf, dest, n, STILL_WIDTHS);
-    const lqip = await sharp(buf).resize({ width: 20 }).webp({ quality: 40 }).toBuffer();
+    bytes += await ladder(pixels, dest, n, STILL_WIDTHS);
+    const lqip = await sharp(pixels).resize({ width: 20 }).webp({ quality: 40 }).toBuffer();
     (views[view] ??= []).push({
       id: `${capture.slug}-${capture.date}-${n}`,
       src: `/assets/${capture.slug}/${capture.date}/stills/${n}`,
@@ -152,7 +162,7 @@ async function stills(capture) {
 
   // Highest first inside a view: the wide establishing shot leads, details follow.
   for (const list of Object.values(views)) list.sort((a, b) => (b.altitude ?? 0) - (a.altitude ?? 0));
-  console.log(`  ${capture.slug} ${capture.date} stills: ${files.length} → ${MB(bytes)}  [${Object.entries(views).map(([k, v]) => `${k} ${v.length}`).join(', ')}]`);
+  console.log(`  ${capture.slug} ${capture.date} stills: ${files.length} (${retouched} retouched) → ${MB(bytes)}  [${Object.entries(views).map(([k, v]) => `${k} ${v.length}`).join(', ')}]`);
   return views;
 }
 

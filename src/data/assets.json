@@ -19,9 +19,9 @@
             "height": 6048,
             "time": "16:22:33",
             "altitude": 138.802,
-            "lqip": "data:image/webp;base64,UklGRp4AAABXRUJQVlA4IJIAAABwBACdASoUAA8APu1iqU2ppaOiMAgBMB2JYgCdMoGv/gObWWJx43x/VfnoAADMgZHO+ndO+ElABP9479c6OSJbSaK3WjhzguvNIb728XFhtL3YXE6bYX5SwwwDWwuG/76uQj2Y/ZgYAf5PlVK+cajHBu/i04Rn1g/gDJXexjQTzEqeyrw4e8EKJmEBQf8FjduUAA==",
             "pitch": -90,
-            "zoom": 2.5
+            "zoom": 2.5,
+            "lqip": "data:image/webp;base64,UklGRp4AAABXRUJQVlA4IJIAAABwBACdASoUAA8APu1iqU2ppaOiMAgBMB2JYgCdMoGv/gObWWJx43x/VfnoAADMgZHO+ndO+ElABP9479c6OSJbSaK3WjhzguvNIb728XFhtL3YXE6bYX5SwwwDWwuG/76uQj2Y/ZgYAf5PlVK+cajHBu/i04Rn1g/gDJXexjQTzEqeyrw4e8EKJmEBQf8FjduUAA=="
           },
           {
             "id": "homestead-2026-09-10-03",
@@ -30,9 +30,9 @@
             "height": 6912,
             "time": "16:22:21",
             "altitude": 138.77,
-            "lqip": "data:image/webp;base64,UklGRooAAABXRUJQVlA4IH4AAADQAwCdASoUAAsAPu1iqU2ppaQiMAgBMB2JQBfnMX/TBfK6HsUCd3AA9AbWKIatLh1W7gVoU3PUQsgxFMOwusQ3F5XIHS/bG2pB1JaBx4OC5xT/DqtY+FPNo4loG3LRBk2oB4cKS+4OxX5F+WxXsZzPooMZDoeHOtIE7mpAAAA=",
             "pitch": -90,
-            "zoom": 1
+            "zoom": 1,
+            "lqip": "data:image/webp;base64,UklGRmwAAABXRUJQVlA4IGAAAAAQBACdASoUAAsAPu1iqU2ppaQiMAgBMB2JZQAAV9Cmo5FXn3ar9ttoAAD+6PBZfGYiflHW+7n6yYJ+TfkMnNGQmDPczQ7wgLCrK7MA65NhNkNQ6owmgYCVndfqpU9+AAA="
           },
           {
             "id": "homestead-2026-09-10-02",
@@ -41,9 +41,9 @@
             "height": 6912,
             "time": "16:22:13",
             "altitude": 117.468,
-            "lqip": "data:image/webp;base64,UklGRowAAABXRUJQVlA4IIAAAADwAwCdASoUAAsAPu1iqU2ppaOiMAgBMB2JYgC/OBQwckIFvVT68qtAAP6lldQnanNhb7qjnrfw50+Az7VExMBDK3IspqNy67trdhyXzBj8UGqvEFreeH39OotuWiCSNCiLhWLqeoZuQE29BHkKnHUty/86424L4YKa/ipXA/BAAA==",
             "pitch": -90,
-            "zoom": 1
+            "zoom": 1,
+            "lqip": "data:image/webp;base64,UklGRowAAABXRUJQVlA4IIAAAADwAwCdASoUAAsAPu1iqU2ppaOiMAgBMB2JYgC/OBQwckIFvVT68qtAAP6lldQnanNhb7qjnrfw50+Az7VExMBDK3IspqNy67trdhyXzBj8UGqvEFreeH39OotuWiCSNCiLhWLqeoZuQE29BHkKnHUty/86424L4YKa/ipXA/BAAA=="
           },
           {
             "id": "homestead-2026-09-10-01",
@@ -52,9 +52,9 @@
             "height": 6912,
             "time": "16:21:41",
             "altitude": 70.761,
-            "lqip": "data:image/webp;base64,UklGRoQAAABXRUJQVlA4IHgAAAAQBACdASoUAAsAPu1iqU2ppaOiMAgBMB2JQBOiP/wEfuowvvr/qiGiAADbsALJwKYmebwXoSwngkunU8KZ1RqW7ZiMe74LgqlF3k6mVI3LglbzpSR0Uvv1cYDqq11ImRORGS6PksuguNk2gpyBlylNW/JSrMkAAAA=",
             "pitch": -90,
-            "zoom": 1
+            "zoom": 1,
+            "lqip": "data:image/webp;base64,UklGRoQAAABXRUJQVlA4IHgAAAAQBACdASoUAAsAPu1iqU2ppaOiMAgBMB2JQBOiP/wEfuowvvr/qiGiAADbsALJwKYmebwXoSwngkunU8KZ1RqW7ZiMe74LgqlF3k6mVI3LglbzpSR0Uvv1cYDqq11ImRORGS6PksuguNk2gpyBlylNW/JSrMkAAAA="
           }
         ],
         "west": [
@@ -65,9 +65,9 @@
             "height": 6912,
             "time": "16:24:38",
             "altitude": 107.882,
-            "lqip": "data:image/webp;base64,UklGRogAAABXRUJQVlA4IHwAAADQAwCdASoUAAsAPu1iqU2ppaQiMAgBMB2JQBhQAt7KZGP1vckENAAA/O5FcADaWIojrG35MEgE3xCt7Exf7VDYz4uQeI08io8kF3Oc9CVK43qRROM+GF0/xvgNQuNc+sb9z+cTkgzimy0wJGaha7PLW8NhZyGL1MSlAAAA",
             "pitch": -51.5,
-            "zoom": 1
+            "zoom": 1,
+            "lqip": "data:image/webp;base64,UklGRogAAABXRUJQVlA4IHwAAADQAwCdASoUAAsAPu1iqU2ppaQiMAgBMB2JQBhQAt7KZGP1vckENAAA/O5FcADaWIojrG35MEgE3xCt7Exf7VDYz4uQeI08io8kF3Oc9CVK43qRROM+GF0/xvgNQuNc+sb9z+cTkgzimy0wJGaha7PLW8NhZyGL1MSlAAAA"
           },
           {
             "id": "homestead-2026-09-10-05",
@@ -76,9 +76,9 @@
             "height": 6912,
             "time": "16:24:22",
             "altitude": 107.844,
-            "lqip": "data:image/webp;base64,UklGRo4AAABXRUJQVlA4IIIAAADQAwCdASoUAAsAPu1iqU2ppaOiMAgBMB2JQBbZBFe3kQi32LBpIAAA/O5FXxC8GXmS/bGppaTYMAunRTvV78DzgiB45tIq2O3jorsHn1iq1O1g+hkkzz697Q1iIDgjoCUva+2B3fsKSkhzIp6eubp5spQ7ZZBpIU61IAPk+gCXwAAA",
             "pitch": -50.4,
-            "zoom": 1
+            "zoom": 1,
+            "lqip": "data:image/webp;base64,UklGRo4AAABXRUJQVlA4IIIAAADQAwCdASoUAAsAPu1iqU2ppaOiMAgBMB2JQBbZBFe3kQi32LBpIAAA/O5FXxC8GXmS/bGppaTYMAunRTvV78DzgiB45tIq2O3jorsHn1iq1O1g+hkkzz697Q1iIDgjoCUva+2B3fsKSkhzIp6eubp5spQ7ZZBpIU61IAPk+gCXwAAA"
           },
           {
             "id": "homestead-2026-09-10-07",
@@ -87,9 +87,9 @@
             "height": 6912,
             "time": "16:25:11",
             "altitude": 107.835,
-            "lqip": "data:image/webp;base64,UklGRoIAAABXRUJQVlA4IHYAAACQAwCdASoUAAsAPu1iqU2ppaQiMAgBMB2JYwAD5bjA2HGt34/AAPIoykA1mAZwcaGAiG4kE6zDUc3XD63haHEDv9MrHMPZT2BH1pSJTOYppRCt5uAbCyHNDg3/YOIaWmkoXjfI4jspY07vc0loIs2eBuweRoAA",
             "pitch": -37.6,
-            "zoom": 1
+            "zoom": 1,
+            "lqip": "data:image/webp;base64,UklGRoIAAABXRUJQVlA4IHYAAACQAwCdASoUAAsAPu1iqU2ppaQiMAgBMB2JYwAD5bjA2HGt34/AAPIoykA1mAZwcaGAiG4kE6zDUc3XD63haHEDv9MrHMPZT2BH1pSJTOYppRCt5uAbCyHNDg3/YOIaWmkoXjfI4jspY07vc0loIs2eBuweRoAA"
           },
           {
             "id": "homestead-2026-09-10-08",
@@ -98,9 +98,9 @@
             "height": 6912,
             "time": "16:26:38",
             "altitude": 103.841,
-            "lqip": "data:image/webp;base64,UklGRpAAAABXRUJQVlA4IIQAAAAwBACdASoUAAsAPu1iqU2ppaOiMAgBMB2JYgC7EfqgODiJxd8WEn04rwAA3bNGzOovJ3WmdgYEMJvT9Cy8FUGaF4nFqp1cZmFef1LXy01anXhRvxqWWPrbvGJTiQzBRjo90cMN4p2gl2jPEs+hKiR4yDWd3dMXFHFR/sHv8PR3cRxniAA=",
             "pitch": -43.2,
-            "zoom": 1
+            "zoom": 1,
+            "lqip": "data:image/webp;base64,UklGRl4AAABXRUJQVlA4IFIAAADQAwCdASoUAAsAPu1iqU2ppaOiMAgBMB2JZwAAQZAoaGhZyn+xGyQA/tzU4i4KlY2DQgmZHoSXo9HbMDsOAc0rYiWpDjWEIqjTyC8yJD5HYcAA"
           }
         ],
         "south": [
@@ -111,9 +111,9 @@
             "height": 6912,
             "time": "16:31:02",
             "altitude": 114.726,
-            "lqip": "data:image/webp;base64,UklGRowAAABXRUJQVlA4IIAAAAAwBACdASoUAAsAPu1iqU2ppaOiMAgBMB2JZACdAywBd90vm526WguVa4AA9lAdum+i3sFH4W/V9R0hNvJZki1kwBurSVxz/jvMkS7fr371zrw1zmyhG8HZKOjeqhiAmzYVtTqfee50iRb2EXWpuPMMmhONLRqqi7lawXr9IA6gAA==",
             "pitch": -48.2,
-            "zoom": 1
+            "zoom": 1,
+            "lqip": "data:image/webp;base64,UklGRmIAAABXRUJQVlA4IFYAAACwAwCdASoUAAsAPu1iqU2ppaQiMAgBMB2JZQAATvwjLYliyyBC9AD+40n4zRQwMiTh+IaVrDrerr2ny/fEXmdOI5em2DtEG3VUAQR8uR0Uj11vE6OAAA=="
           },
           {
             "id": "homestead-2026-09-10-12",
@@ -122,9 +122,9 @@
             "height": 6912,
             "time": "16:31:16",
             "altitude": 114.707,
-            "lqip": "data:image/webp;base64,UklGRpoAAABXRUJQVlA4II4AAAAQBACdASoUAAsAPu1iqU2ppaOiMAgBMB2JQBWDa/gJDVtl/AftxIo1wAD3PjiMyVg70gMb/jRH9PMyZ6w7Eg//oGyhI2W4SshYVRii+RTduuojAatNvoOHAbWE4hvoftV/MTaT/hqWA6A9F66UrOo02OL+6OJ1rufRvoVgeLZ0fpseEayQDOsBC6GU3gAA",
             "pitch": -48.2,
-            "zoom": 1.94
+            "zoom": 1.94,
+            "lqip": "data:image/webp;base64,UklGRpoAAABXRUJQVlA4II4AAAAQBACdASoUAAsAPu1iqU2ppaOiMAgBMB2JQBWDa/gJDVtl/AftxIo1wAD3PjiMyVg70gMb/jRH9PMyZ6w7Eg//oGyhI2W4SshYVRii+RTduuojAatNvoOHAbWE4hvoftV/MTaT/hqWA6A9F66UrOo02OL+6OJ1rufRvoVgeLZ0fpseEayQDOsBC6GU3gAA"
           },
           {
             "id": "homestead-2026-09-10-10",
@@ -133,9 +133,9 @@
             "height": 6912,
             "time": "16:30:34",
             "altitude": 104.815,
-            "lqip": "data:image/webp;base64,UklGRooAAABXRUJQVlA4IH4AAADwAwCdASoUAAsAPu1iqU2ppaOiMAgBMB2JYgC7ABeH3T6nS614H5YAAPOWjv5LHfjJfVi2iZlEJ422L7qcGadEo6VUovl6Y7MWRhbqSHAY6iHy/sxkCUJ1qhIvSlc6dtHnXIFARWGG6detycIvx0hYyOA5RPNKfmIAKvkAAAA=",
             "pitch": -47.5,
-            "zoom": 1
+            "zoom": 1,
+            "lqip": "data:image/webp;base64,UklGRooAAABXRUJQVlA4IH4AAADwAwCdASoUAAsAPu1iqU2ppaOiMAgBMB2JYgC7ABeH3T6nS614H5YAAPOWjv5LHfjJfVi2iZlEJ422L7qcGadEo6VUovl6Y7MWRhbqSHAY6iHy/sxkCUJ1qhIvSlc6dtHnXIFARWGG6detycIvx0hYyOA5RPNKfmIAKvkAAAA="
           },
           {
             "id": "homestead-2026-09-10-09",
@@ -144,9 +144,9 @@
             "height": 6912,
             "time": "16:30:28",
             "altitude": 104.712,
-            "lqip": "data:image/webp;base64,UklGRowAAABXRUJQVlA4IIAAAAAQBACdASoUAAsAPu1iqU2ppaOiMAgBMB2JZgC7AB0/Kuq5uwJE7PzaAAD9ZyOMKo+Y0qK86HbRvxhtLLZtCsGycpZ/QiBpXrzD0E4/Ou7UG1N9AIQJFuFahMVIJXhdgK41xEl68HjEwnNTLMye12zAj1wB2vJtfK4xiAC4UAAAAA==",
             "pitch": -47.2,
-            "zoom": 1
+            "zoom": 1,
+            "lqip": "data:image/webp;base64,UklGRowAAABXRUJQVlA4IIAAAAAQBACdASoUAAsAPu1iqU2ppaOiMAgBMB2JZgC7AB0/Kuq5uwJE7PzaAAD9ZyOMKo+Y0qK86HbRvxhtLLZtCsGycpZ/QiBpXrzD0E4/Ou7UG1N9AIQJFuFahMVIJXhdgK41xEl68HjEwnNTLMye12zAj1wB2vJtfK4xiAC4UAAAAA=="
           }
         ],
         "east": [
@@ -157,9 +157,9 @@
             "height": 6912,
             "time": "16:32:33",
             "altitude": 163.786,
-            "lqip": "data:image/webp;base64,UklGRpAAAABXRUJQVlA4IIQAAAAwBACdASoUAAsAPu1iqU2ppaOiMAgBMB2JQBfntQAxU1XXeH5jn1oa0AAA/SIEskwjuorJAlneOXAR07jBg4MDVZzWgH8iEH23jm17UNSHAAnb+kM1vQlpSBR6KJX4R4wxp9qtqS7ptUhfHKRyvtfzF+XubcX6+BbcW67OHjpxIx+AAAA=",
             "pitch": -57.2,
-            "zoom": 1
+            "zoom": 1,
+            "lqip": "data:image/webp;base64,UklGRpAAAABXRUJQVlA4IIQAAAAwBACdASoUAAsAPu1iqU2ppaOiMAgBMB2JQBfntQAxU1XXeH5jn1oa0AAA/SIEskwjuorJAlneOXAR07jBg4MDVZzWgH8iEH23jm17UNSHAAnb+kM1vQlpSBR6KJX4R4wxp9qtqS7ptUhfHKRyvtfzF+XubcX6+BbcW67OHjpxIx+AAAA="
           },
           {
             "id": "homestead-2026-09-10-14",
@@ -168,9 +168,9 @@
             "height": 6912,
             "time": "16:32:09",
             "altitude": 163.697,
-            "lqip": "data:image/webp;base64,UklGRpYAAABXRUJQVlA4IIoAAAAQBACdASoUAAsAPu1iqU2ppaOiMAgBMB2JagC06YwSmRYDQMa2AZ0gAAD+PID9iGght7M+nQcbkamDdi+TszoYGLvt9KeFCU8eRtB4tR5PGsmijwgLTv4xggPLzi+MTP8tUWqDc9ap2GILUDqgbeiSqXIgzqTWWE5tZYUljesspHuACsMcYa8AAAA=",
             "pitch": -61.1,
-            "zoom": 2.09
+            "zoom": 2.09,
+            "lqip": "data:image/webp;base64,UklGRpYAAABXRUJQVlA4IIoAAAAQBACdASoUAAsAPu1iqU2ppaOiMAgBMB2JagC06YwSmRYDQMa2AZ0gAAD+PID9iGght7M+nQcbkamDdi+TszoYGLvt9KeFCU8eRtB4tR5PGsmijwgLTv4xggPLzi+MTP8tUWqDc9ap2GILUDqgbeiSqXIgzqTWWE5tZYUljesspHuACsMcYa8AAAA="
           },
           {
             "id": "homestead-2026-09-10-15",
@@ -179,9 +179,9 @@
             "height": 6912,
             "time": "16:32:12",
             "altitude": 163.697,
-            "lqip": "data:image/webp;base64,UklGRpYAAABXRUJQVlA4IIoAAAAQBACdASoUAAsAPu1iqU2ppaQiMAgBMB2JaAC06YvgmSGnKG/grEsAAAD+PIGDtUZC00sM6FbC0uLNOnEpLCNZtJOonoj4TJNJ5QfpamTHYgdNXwZje9S6Y+OBL3K059oBqjE6+gw3ATk6iGD1gwvvv3PhpMNHfOAPE9vCD9o2vXjPPZrgYPJvGAA=",
             "pitch": -61.1,
-            "zoom": 2.09
+            "zoom": 2.09,
+            "lqip": "data:image/webp;base64,UklGRpYAAABXRUJQVlA4IIoAAAAQBACdASoUAAsAPu1iqU2ppaQiMAgBMB2JaAC06YvgmSGnKG/grEsAAAD+PIGDtUZC00sM6FbC0uLNOnEpLCNZtJOonoj4TJNJ5QfpamTHYgdNXwZje9S6Y+OBL3K059oBqjE6+gw3ATk6iGD1gwvvv3PhpMNHfOAPE9vCD9o2vXjPPZrgYPJvGAA="
           },
           {
             "id": "homestead-2026-09-10-13",
@@ -190,9 +190,9 @@
             "height": 6912,
             "time": "16:31:57",
             "altitude": 163.647,
-            "lqip": "data:image/webp;base64,UklGRooAAABXRUJQVlA4IH4AAADwAwCdASoUAAsAPu1iqU2ppaOiMAgBMB2JYwAD5JmQz9LAtu7tSjgAAPIrAzo2O0pL6hzFSQWw5of8L7OUq2SdgEu8RRGQpsE6+ZWPL9ANx9YXTZzVeWn1OcTnKasAU8mG4wp7Hvmjh4I/kkNCUNvameEEMvjau9EODgeAAAA=",
             "pitch": -61.1,
-            "zoom": 1
+            "zoom": 1,
+            "lqip": "data:image/webp;base64,UklGRmQAAABXRUJQVlA4IFgAAADwAwCdASoUAAsAPu1iqU2ppaOiMAgBMB2JZwAARe65BruW597gYZwAAP7o8OIsviyLDdHWRJwlvwE94URGyX+M7SRiTofg2tbueCyh+Gy8hLaaIACAi5AA"
           }
         ],
         "north": [
@@ -203,9 +203,9 @@
             "height": 6912,
             "time": "16:33:10",
             "altitude": 164.8,
-            "lqip": "data:image/webp;base64,UklGRoYAAABXRUJQVlA4IHoAAADQAwCdASoUAAsAPu1iqk2ppaQiMAgBMB2JQBibA4d8CjTOu/FX2AAA3P3bxXeuRFW6YXuAFnr6nLSZ17HuE9cCh5zsvv1vKc7BHUR0J99TsTEKwSLGiC+gQSoUTD6z4TusqlEiNhWByeqj8KxbYoYW/uuGgxku4AAAAA==",
             "pitch": -56.1,
-            "zoom": 1
+            "zoom": 1,
+            "lqip": "data:image/webp;base64,UklGRoYAAABXRUJQVlA4IHoAAADQAwCdASoUAAsAPu1iqk2ppaQiMAgBMB2JQBibA4d8CjTOu/FX2AAA3P3bxXeuRFW6YXuAFnr6nLSZ17HuE9cCh5zsvv1vKc7BHUR0J99TsTEKwSLGiC+gQSoUTD6z4TusqlEiNhWByeqj8KxbYoYW/uuGgxku4AAAAA=="
           },
           {
             "id": "homestead-2026-09-10-18",
@@ -214,9 +214,9 @@
             "height": 6912,
             "time": "16:33:22",
             "altitude": 164.775,
-            "lqip": "data:image/webp;base64,UklGRooAAABXRUJQVlA4IH4AAABQBACdASoUAAsAPu1iqU2ppaQiMAgBMB2JQBfnBFoW7ogaPuisBHV3SNFAAPaggVgG0mZjhuT47tx0VsNHPbqoHuF/nToQHqvmc0LfR0xoF6wpn++LTtVWv3vzv0Nw0QqB0dkSPRr0lB9dXkezR90FoLGdIEUXIvrzMjAAAAA=",
             "pitch": -56.8,
-            "zoom": 2.05
+            "zoom": 2.05,
+            "lqip": "data:image/webp;base64,UklGRooAAABXRUJQVlA4IH4AAABQBACdASoUAAsAPu1iqU2ppaQiMAgBMB2JQBfnBFoW7ogaPuisBHV3SNFAAPaggVgG0mZjhuT47tx0VsNHPbqoHuF/nToQHqvmc0LfR0xoF6wpn++LTtVWv3vzv0Nw0QqB0dkSPRr0lB9dXkezR90FoLGdIEUXIvrzMjAAAAA="
           },
           {
             "id": "homestead-2026-09-10-19",
@@ -225,9 +225,9 @@
             "height": 6912,
             "time": "16:33:25",
             "altitude": 164.742,
-            "lqip": "data:image/webp;base64,UklGRoYAAABXRUJQVlA4IHoAAAAQBACdASoUAAsAPu1iqU2ppaOiMAgBMB2JQBfJAzM1+ITa1EKSWCIIgAD2oIFXj2vZ/yt1VsuBPNFdM1+v2C6KWldx2Ugqi0zSR7/NidHzhJ0/PKTHaXFA5lWXKFNvR/kvWeNq5IDnr+VaarKocL9tmOTYC2u2SzRAAA==",
             "pitch": -56.8,
-            "zoom": 2.05
+            "zoom": 2.05,
+            "lqip": "data:image/webp;base64,UklGRoYAAABXRUJQVlA4IHoAAAAQBACdASoUAAsAPu1iqU2ppaOiMAgBMB2JQBfJAzM1+ITa1EKSWCIIgAD2oIFXj2vZ/yt1VsuBPNFdM1+v2C6KWldx2Ugqi0zSR7/NidHzhJ0/PKTHaXFA5lWXKFNvR/kvWeNq5IDnr+VaarKocL9tmOTYC2u2SzRAAA=="
           },
           {
             "id": "homestead-2026-09-10-22",
@@ -236,9 +236,9 @@
             "height": 6912,
             "time": "16:34:48",
             "altitude": 132.301,
-            "lqip": "data:image/webp;base64,UklGRoYAAABXRUJQVlA4IHoAAACwAwCdASoUAAsAPu1iqU2ppaOiMAgBMB2JQACiZCiCwLTrA83jAADf/PV5Cqb3MVw5g39r6GzJ3NEosjOwe6a8HUDP+KRZf6Bn6Tz+CBzPhI91qKyqAf1VuVtvdShGegY12eSpxccKMsSyVl0wGHp51gqcL5DDZfmAAA==",
             "pitch": -54.1,
-            "zoom": 1
+            "zoom": 1,
+            "lqip": "data:image/webp;base64,UklGRmAAAABXRUJQVlA4IFQAAABQAwCdASoUAAsAPu1iqU2ppaOiMAgBMB2JZQDG9A/cFlUSoAD+2nOS9eKdkGjznOqKHLJuywXjmBEKE2UXt/+bz8qWzwIspXJju+X+sOXmlsYCgAA="
           },
           {
             "id": "homestead-2026-09-10-21",
@@ -247,9 +247,9 @@
             "height": 6912,
             "time": "16:34:11",
             "altitude": 72.272,
-            "lqip": "data:image/webp;base64,UklGRpYAAABXRUJQVlA4IIoAAAAwBACdASoUAAsAPu1iqU2ppaOiMAgBMB2JQBdiP/wG/wSkhWEcXJ3zoIAA/lfrx8bCm4jTR1tUHWlxq//Z56ljdvBv6fWpVQ+QeQ4lRMUpCD+t++wqqL9eo8i9V4NaOho7XzPxhth+42gIhbxYQPyFXNV9hbMyuAVUj0WPx2DYMaHAlqA+bpUAAAA=",
             "pitch": -55.6,
-            "zoom": 1
+            "zoom": 1,
+            "lqip": "data:image/webp;base64,UklGRpYAAABXRUJQVlA4IIoAAAAwBACdASoUAAsAPu1iqU2ppaOiMAgBMB2JQBdiP/wG/wSkhWEcXJ3zoIAA/lfrx8bCm4jTR1tUHWlxq//Z56ljdvBv6fWpVQ+QeQ4lRMUpCD+t++wqqL9eo8i9V4NaOho7XzPxhth+42gIhbxYQPyFXNV9hbMyuAVUj0WPx2DYMaHAlqA+bpUAAAA="
           },
           {
             "id": "homestead-2026-09-10-20",
@@ -258,9 +258,9 @@
             "height": 6912,
             "time": "16:34:08",
             "altitude": 72.264,
-            "lqip": "data:image/webp;base64,UklGRpIAAABXRUJQVlA4IIYAAABwBACdASoUAAsAPu1iqU2ppaOiMAgBMB2JYgC7MoGv/gOAnwNcKN+rdvZBAAD91A2auIL9Z+oI4XyN+BqFA3dcKW5AIalOHdZvwCEb8PqoPOpEm3C1Xc5ZO/pWZOnr6QIw8IZ2iVfFAXqEZAsRKBWoCc+qi1CL0th4IYgQEPOZeSWmMAAAAA==",
             "pitch": -55.5,
-            "zoom": 1
+            "zoom": 1,
+            "lqip": "data:image/webp;base64,UklGRpIAAABXRUJQVlA4IIYAAABwBACdASoUAAsAPu1iqU2ppaOiMAgBMB2JYgC7MoGv/gOAnwNcKN+rdvZBAAD91A2auIL9Z+oI4XyN+BqFA3dcKW5AIalOHdZvwCEb8PqoPOpEm3C1Xc5ZO/pWZOnr6QIw8IZ2iVfFAXqEZAsRKBWoCc+qi1CL0th4IYgQEPOZeSWmMAAAAA=="
           }
         ]
       }
@@ -286,9 +286,9 @@
             "height": 6912,
             "time": "17:37:22",
             "altitude": 141.709,
-            "lqip": "data:image/webp;base64,UklGRn4AAABXRUJQVlA4IHIAAADQAwCdASoUAAsAPu1iqU2ppaOiMAgBMB2JQBUegvKa33gw46hs9OAA/Zoe7bLseIPhHUXh/kjYdUW33TCZF8PO/Yv2/lJE6wv6rBgQzDFB9CSPhjQWU4/nOpoG085LP5HLLfRvtjgKCKL6wtIxwc71QAA=",
             "pitch": -90,
-            "zoom": 1
+            "zoom": 1,
+            "lqip": "data:image/webp;base64,UklGRmYAAABXRUJQVlA4IFoAAADQAwCdASoUAAsAPu1iqU2ppaQiMAgBMB2JZQAATreDjmLTwN/KYIgA/uX0xxuR2nm4y9kj7+pbE74DfEtERSgIKNKvNHRQhvxd1z2xCv41QY2GSA05bA0KAAA="
           },
           {
             "id": "bayline-2026-09-10-01",
@@ -297,9 +297,9 @@
             "height": 6912,
             "time": "17:36:55",
             "altitude": 77.182,
-            "lqip": "data:image/webp;base64,UklGRoAAAABXRUJQVlA4IHQAAAAwBACdASoUAAsAPu1iqU2ppaQiMAgBMB2JZgCdABulisu3tX7NDljCrqgA/tx451fKSEX3G/KWWqaAMtSu5LG46WdNruTmRB8MUZ7Ozn+izysP6BqJaq7OhKf6T9ssMeKt6HCgGfZRmduUUD6Jx7IJN4AAAA==",
             "pitch": -90,
-            "zoom": 1
+            "zoom": 1,
+            "lqip": "data:image/webp;base64,UklGRoAAAABXRUJQVlA4IHQAAAAwBACdASoUAAsAPu1iqU2ppaQiMAgBMB2JZgCdABulisu3tX7NDljCrqgA/tx451fKSEX3G/KWWqaAMtSu5LG46WdNruTmRB8MUZ7Ozn+izysP6BqJaq7OhKf6T9ssMeKt6HCgGfZRmduUUD6Jx7IJN4AAAA=="
           }
         ],
         "east": [
@@ -310,9 +310,9 @@
             "height": 6912,
             "time": "17:38:55",
             "altitude": 170.024,
-            "lqip": "data:image/webp;base64,UklGRogAAABXRUJQVlA4IHwAAABwBACdASoUAAsAPu1iqU2ppaOiMAgBMB2JQBgdv/7szILoQMg0ncbPtO+n/AD+GMK7D06T4WAG75vC7jj4cX/Ky4ifqUYFrHR6ULIY4Pp1FCMYF8dNIZFq0HcD8WJg39ftcBo9VMW6K6BswNRjcX7nCS3+lpRFc1CMAAAA",
             "pitch": -64,
-            "zoom": 1
+            "zoom": 1,
+            "lqip": "data:image/webp;base64,UklGRogAAABXRUJQVlA4IHwAAABwBACdASoUAAsAPu1iqU2ppaOiMAgBMB2JQBgdv/7szILoQMg0ncbPtO+n/AD+GMK7D06T4WAG75vC7jj4cX/Ky4ifqUYFrHR6ULIY4Pp1FCMYF8dNIZFq0HcD8WJg39ftcBo9VMW6K6BswNRjcX7nCS3+lpRFc1CMAAAA"
           },
           {
             "id": "bayline-2026-09-10-03",
@@ -321,9 +321,9 @@
             "height": 6912,
             "time": "17:38:05",
             "altitude": 142.221,
-            "lqip": "data:image/webp;base64,UklGRnoAAABXRUJQVlA4IG4AAACwAwCdASoUAAsAPu1iqU2ppaOiMAgBMB2JYwCw7BOxwHEFgg9boAD9q+fBKLO75vaguztlc+gkLJpzab4kM9TAIt7C4kPBpWbvB9v+J7JhEgKHFWbskUVkjkuEzR5KNa1oQVDtksRpDK0elKAAAA==",
             "pitch": -64.6,
-            "zoom": 1
+            "zoom": 1,
+            "lqip": "data:image/webp;base64,UklGRmYAAABXRUJQVlA4IFoAAADQAwCdASoUAAsAPu1iqU2ppaOiMAgBMB2JZwAAUrY1ZLlAMfIpFaAA/uWhiqfRz2RrahMPAPPHKY70QPs5DmXvcg4uZ2YHUa53nqB9hixtozGzJ4JyCJYoAAA="
           }
         ],
         "north": [
@@ -334,9 +334,9 @@
             "height": 6912,
             "time": "17:39:27",
             "altitude": 169.979,
-            "lqip": "data:image/webp;base64,UklGRowAAABXRUJQVlA4IIAAAADwAwCdASoUAAsAPu1iqU2ppaOiMAgBMB2JQBdgBArbwU26AVoreTsAAP2TOVcpCtykliIZv2eFbuNjpp8rgZMIgEpGI+DLBPexdW/OYkseEyPdl5ix77AgCbo5CQ9jxqkXGuwPulmKUWHbC/In6QRMzp6LexVd6L+PD10g5AAAAA==",
             "pitch": -59.6,
-            "zoom": 1
+            "zoom": 1,
+            "lqip": "data:image/webp;base64,UklGRowAAABXRUJQVlA4IIAAAADwAwCdASoUAAsAPu1iqU2ppaOiMAgBMB2JQBdgBArbwU26AVoreTsAAP2TOVcpCtykliIZv2eFbuNjpp8rgZMIgEpGI+DLBPexdW/OYkseEyPdl5ix77AgCbo5CQ9jxqkXGuwPulmKUWHbC/In6QRMzp6LexVd6L+PD10g5AAAAA=="
           },
           {
             "id": "bayline-2026-09-10-06",
@@ -345,9 +345,9 @@
             "height": 6912,
             "time": "17:40:19",
             "altitude": 141.391,
-            "lqip": "data:image/webp;base64,UklGRpQAAABXRUJQVlA4IIgAAAAQBACdASoUAAsAPu1iqU2ppaOiMAgBMB2JYwCADOkwJjj4qGzRv3+JiADwOqnYvNj3AohSlAmG7bWTNP2UP/A84PcJ0Ey4f8MDUAToZL4el6fIvzXvKv+44mHcbR+GQ/S5/RaEeskW8RK6WjpQzw+Nfn+vo56Pr4/APJng4o6FfYSc1ucs8AAA",
             "pitch": -59.3,
-            "zoom": 1
+            "zoom": 1,
+            "lqip": "data:image/webp;base64,UklGRmIAAABXRUJQVlA4IFYAAADwAwCdASoUAAsAPu1iqU2ppaOiMAgBMB2JZwAASojRSJGMe5DdfIsAAP7lm6gCQxkW0ujr6Vd/UlknkqP1Fuel4dB1RtkMU4Y9757sHlqY0NrHOhQAAA=="
           }
         ],
         "west": [
@@ -358,9 +358,9 @@
             "height": 6912,
             "time": "17:42:25",
             "altitude": 150.12,
-            "lqip": "data:image/webp;base64,UklGRnwAAABXRUJQVlA4IHAAAABQAwCdASoUAAsAPu1iqU2ppaQiMAgBMB2JQAAGKOUdEl0+AAD4wPiV12XThcTOq6cbnZ6pxj0IIdvplDLeIm3zoxeb2ap2Ig3TCYl/xjp7Uec7HUYPQ8TedX+qIjQeyQTq35asKjO58gPIFyiCY4AA",
             "pitch": -49.5,
-            "zoom": 1
+            "zoom": 1,
+            "lqip": "data:image/webp;base64,UklGRmYAAABXRUJQVlA4IFoAAADQAwCdASoUAAsAPu1iqU2ppaQiMAgBMB2JZwDKAB4YOGG8VYST8gAA/txqEctd+9PBUDq2bZK9gz0AuGD6XUqeINp9+i7Vcrx0hUrjLxEKpgKfpWhepUaEAAA="
           },
           {
             "id": "bayline-2026-09-10-09",
@@ -369,9 +369,9 @@
             "height": 6912,
             "time": "17:42:29",
             "altitude": 150.114,
-            "lqip": "data:image/webp;base64,UklGRnoAAABXRUJQVlA4IG4AAABQAwCdASoUAAsAPu1iqU2ppaOiMAgBMB2JQAAGKO+i+WWZAAD4wVyC5w/TXo3Flb4Cat/9kTAgnPpKMEME/xSffxCn1Z5lQ3boewf4x09qPOdj3KJ4tIMMmHl0XnEXlYe3iSumFSlMeTVWwdigAA==",
             "pitch": -49.5,
-            "zoom": 1
+            "zoom": 1,
+            "lqip": "data:image/webp;base64,UklGRnoAAABXRUJQVlA4IG4AAABQAwCdASoUAAsAPu1iqU2ppaOiMAgBMB2JQAAGKO+i+WWZAAD4wVyC5w/TXo3Flb4Cat/9kTAgnPpKMEME/xSffxCn1Z5lQ3boewf4x09qPOdj3KJ4tIMMmHl0XnEXlYe3iSumFSlMeTVWwdigAA=="
           },
           {
             "id": "bayline-2026-09-10-07",
@@ -380,9 +380,9 @@
             "height": 6912,
             "time": "17:41:41",
             "altitude": 99.311,
-            "lqip": "data:image/webp;base64,UklGRpAAAABXRUJQVlA4IIQAAABwBACdASoUAAsAPu1iqU2ppaOiMAgBMB2JZgC7DKgAKsLc2/45NVvpWU/KAADbPa01hv5++cqovcGL1bJtN2mGzfwT/SjiJ0MMj6T/hGyFro9h9U2XwoB7uMwPTwwhFWG26zdo+H7tNI0K7uKw6oDTYDYUIofRgEPggfeKebDJQPGnAAA=",
             "pitch": -59.2,
-            "zoom": 1
+            "zoom": 1,
+            "lqip": "data:image/webp;base64,UklGRpAAAABXRUJQVlA4IIQAAABwBACdASoUAAsAPu1iqU2ppaOiMAgBMB2JZgC7DKgAKsLc2/45NVvpWU/KAADbPa01hv5++cqovcGL1bJtN2mGzfwT/SjiJ0MMj6T/hGyFro9h9U2XwoB7uMwPTwwhFWG26zdo+H7tNI0K7uKw6oDTYDYUIofRgEPggfeKebDJQPGnAAA="
           }
         ],
         "south": [
@@ -393,9 +393,9 @@
             "height": 6912,
             "time": "17:45:54",
             "altitude": 157.495,
-            "lqip": "data:image/webp;base64,UklGRowAAABXRUJQVlA4IIAAAAAwBACdASoUAAsAPu1iqU2ppaOiMAgBMB2JQBjihshQWIknAV4hPPKLdQAA/Su7FQUzLUPYmhfzYe6Zv/0uWaHdp0O+eJvluml7+OVhug7HZeVQ5fp1G1FreFy3YZbH7H1hoL5H60HEehUk4s3epb6psWvWKeb1P+0gRgq7ZkAAAA==",
             "pitch": -59,
-            "zoom": 1
+            "zoom": 1,
+            "lqip": "data:image/webp;base64,UklGRmQAAABXRUJQVlA4IFgAAACQAwCdASoUAAsAPu1iqU2ppaQiMAgBMB2JZwDImBPnQ6oA/P6AAP7o776BWscTf6/m5L9ale00WZ8Dp3YMkZWvlOxScFm5Ja+0WoVdLxgqNyI5Dvs/SgAA"
           },
           {
             "id": "bayline-2026-09-10-10",
@@ -404,9 +404,9 @@
             "height": 6912,
             "time": "17:44:23",
             "altitude": 157.412,
-            "lqip": "data:image/webp;base64,UklGRpAAAABXRUJQVlA4IIQAAAAQBACdASoUAAsAPu1iqU2ppaOiMAgBMB2JQBibA4laoCrwwmRpZvoAAAD9K7sTaCmspYOjd05ZQb0SFD+AgDUeDSG+LLBu4TPvf8lPpbyt1Z6kiWefmamRA9L+qKIBLuAXJYwx3t5cjDiPQbxsWQOmVNgBFMKVSoRRNo/qMxPDzNcAAAA=",
             "pitch": -59,
-            "zoom": 1
+            "zoom": 1,
+            "lqip": "data:image/webp;base64,UklGRpAAAABXRUJQVlA4IIQAAAAQBACdASoUAAsAPu1iqU2ppaOiMAgBMB2JQBibA4laoCrwwmRpZvoAAAD9K7sTaCmspYOjd05ZQb0SFD+AgDUeDSG+LLBu4TPvf8lPpbyt1Z6kiWefmamRA9L+qKIBLuAXJYwx3t5cjDiPQbxsWQOmVNgBFMKVSoRRNo/qMxPDzNcAAAA="
           }
         ]
       }
