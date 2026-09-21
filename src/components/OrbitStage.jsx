@@ -33,6 +33,9 @@ const BEHIND = 6; // full-width frames behind the hand that may stand in for it
 
 export function OrbitStage({ orbit, active = true }) {
   const canvas = useRef(null);
+  // ?frames on the address puts the frame number under the cursor, for choosing arcs
+  const readout = useRef(null);
+  const numbered = typeof location !== 'undefined' && new URLSearchParams(location.search).has('frames');
   const state = useRef({ frame: 0, velocity: 0, speed: 0, dragging: false });
   const [ready, setReady] = useState(0); // 0..1, how much of the orbit has arrived
   const [prompt, setPrompt] = useState(false);
@@ -48,15 +51,21 @@ export function OrbitStage({ orbit, active = true }) {
     const el = canvas.current;
     const ctx = el.getContext('2d', { alpha: false });
     const s = state.current;
-    const total = orbit.frames;
     const width = widthFor(innerWidth, WIDTHS);
     const digits = orbit.digits ?? 3;
+    // What is actually shown: the chosen arcs laid end to end, or the whole turn when none
+    // are set. Everything below counts in places along this list, and only the URL and the
+    // readout speak in the capture's own frame numbers.
+    const arcs = orbit.arcs?.length ? orbit.arcs : [[0, orbit.frames - 1]];
+    const shown = [];
+    for (const [a, b] of arcs) for (let f = Math.max(0, a); f <= Math.min(b, orbit.frames - 1); f++) shown.push(f);
+    const total = shown.length;
     // Wheel and arrow keys move by a share of the turn, not by one frame: at thousands of
     // frames a turn, a single frame is a fraction of a degree.
     const coarse = Math.max(1, Math.round(total / 96));
     // The orbit has a first and a last frame; it does not wrap around.
     const clamp = (v) => Math.min(Math.max(v, 0), total - 1);
-    const url = (i, w) => srcAt({ src: `${orbit.src}/${String(clamp(i)).padStart(digits, '0')}` }, w);
+    const url = (i, w) => srcAt({ src: `${orbit.src}/${String(shown[clamp(i)]).padStart(digits, '0')}` }, w);
     const spineStep = Math.max(1, Math.floor(total / SPINE));
     let alive = true;
     let raf = 0;
@@ -119,6 +128,7 @@ export function OrbitStage({ orbit, active = true }) {
       drawn = img;
       const { W, H, left, top } = coverRect(el.width, el.height, img.naturalWidth / img.naturalHeight);
       ctx.drawImage(img, left, top, W, H);
+      if (readout.current) readout.current.textContent = `frame ${shown[i]}`;
     };
 
     const evict = () => {
@@ -295,6 +305,12 @@ export function OrbitStage({ orbit, active = true }) {
   return (
     <>
       <canvas ref={canvas} className="absolute inset-0 h-full w-full cursor-grab touch-none" style={{ backgroundImage: `url(${orbit.lqip})`, backgroundSize: 'cover', backgroundPosition: 'center' }} />
+
+      {numbered && (
+        <p ref={readout} className="panel label-micro pointer-events-none absolute bottom-8 left-1/2 z-30 -translate-x-1/2 rounded-full px-5 py-2.5 text-brass-lit">
+          frame —
+        </p>
+      )}
 
       {ready < 0.999 && (
         <div className="pointer-events-none absolute inset-x-0 bottom-8 z-20 text-center">

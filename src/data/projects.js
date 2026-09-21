@@ -23,6 +23,22 @@ const META = {
   },
 };
 
+// The arcs of each orbit worth showing: the stretches where the plot is clear of the
+// towers standing in front of it. The numbers are frames of that capture's own sequence,
+// each pair a first and a last, and they play one after another as the orbit is dragged —
+// everything outside them is skipped. An empty list shows the whole turn.
+const ORBIT_ARCS = {
+  // Four arcs, one per reference pair, matched frame by frame to the stills chosen off the
+  // page. The towers between them, which stand in front of the plot, are skipped.
+  //
+  // Found automatically first, by reading the middle of every frame — open ground means the
+  // plot is visible, a flat bright wall means a tower is in the way. That pass gave
+  // [[158, 486], [780, 957], [1098, 1297], [1670, 1869]], which is what to go back to if
+  // the matched arcs below read worse.
+  homestead: { '2026-09-10': [[158, 486], [780, 957], [1098, 1297], [1670, 1869]] },
+  bayline: { '2026-09-10': [] },
+};
+
 // From the brand guidelines.
 export const TAGLINE = 'Building Landmarks. Creating Legacies.';
 
@@ -39,7 +55,11 @@ export const VIEWS = [
 ];
 
 export const PROJECTS = Object.entries(META).map(([slug, meta]) => {
-  const shot = (assets[slug] ?? []).map((c) => ({ ...c, upcoming: false }));
+  const shot = (assets[slug] ?? []).map((c) => ({
+    ...c,
+    upcoming: false,
+    orbit: c.orbit ? { ...c.orbit, arcs: ORBIT_ARCS[slug]?.[c.date] ?? [] } : null,
+  }));
   const planned = PLANNED.filter((date) => !shot.some((c) => c.date === date)).map((date) => ({ date, upcoming: true, views: {}, orbit: null }));
   return { slug, ...meta, captures: [...shot, ...planned].sort((a, b) => a.date.localeCompare(b.date)) };
 });
