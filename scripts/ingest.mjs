@@ -51,9 +51,16 @@ const CAPTURES = [
   },
 ];
 
-const ORBIT_FRAMES = 96; // one frame every ~3.8° of a full turn
-// Orbit frames are compressed harder than stills: 96 of them ship as one sequence, and at
-// 25 frames a second of drag nobody reads a single frame closely.
+// Every frame the drone shot, so the orbit can be held on any one of them. A turn is
+// thousands of frames, so they are never all loaded at once: the page keeps a coarse spine
+// of the whole turn and streams the frames around the hand (see OrbitStage).
+const ORBIT_DIGITS = 5; // zero-padding of the frame filenames
+// One frame in every KEEP of the flight. At 2, a turn is still finer than a drag can
+// resolve — roughly one frame per pixel of a screen-width drag — for half the weight.
+const ORBIT_KEEP = 2;
+// Orbit frames are compressed harder than stills: nobody reads a single one closely while
+// the turn is moving.
+const FRAME_JOBS = 8; // frames encoded in parallel
 const ORBIT_WIDTHS = [{ w: 640, q: 60 }, { w: 1280, q: 56 }];
 const STILL_WIDTHS = [{ w: 640, q: 72 }, { w: 1280, q: 70 }, { w: 1920, q: 68 }];
 
@@ -172,25 +179,38 @@ async function orbit(capture) {
   const src = capture.orbit.startsWith("/") ? capture.orbit : join(capture.dir, capture.orbit);
   const dest = join(OUT, capture.slug, capture.date, 'orbit');
   const tmp = join(TMP, `${capture.slug}-${capture.date}`);
+  await rm(dest, { recursive: true, force: true }); // frame counts change; stale frames must not linger
   await mkdir(dest, { recursive: true });
   await mkdir(tmp, { recursive: true });
 
   const probe = await run('ffprobe', ['-v', 'error', '-select_streams', 'v:0', '-show_entries', 'stream=width,height', '-show_entries', 'format=duration', '-of', 'default=nw=1:nk=1', src]);
   const [width, height, duration] = probe.stdout.trim().split('\n').map(Number);
 
-  // Evenly spaced across the whole orbit, at full height, as quality JPEGs first.
-  await run('ffmpeg', ['-v', 'error', '-y', '-i', src, '-vf', `fps=${ORBIT_FRAMES / duration},scale=1920:-2`, '-q:v', '2', join(tmp, '%03d.jpg')]);
-  const frames = (await readdir(tmp)).filter((f) => f.endsWith('.jpg')).sort().slice(0, ORBIT_FRAMES);
+  // The frames of the flight, at full height, as quality JPEGs first.
+  const pick = ORBIT_KEEP > 1 ? `select='not(mod(n\\,${ORBIT_KEEP}))',` : '';
+  await run('ffmpeg', ['-v', 'error', '-y', '-i', src, '-fps_mode', 'passthrough', '-vf', `${pick}scale=1920:-2`, '-q:v', '3', join(tmp, `%0${ORBIT_DIGITS}d.jpg`)]);
+  const frames = (await readdir(tmp)).filter((f) => f.endsWith('.jpg')).sort();
 
   let bytes = 0;
-  for (const [i, f] of frames.entries()) {
-    bytes += await ladder(join(tmp, f), dest, String(i).padStart(3, '0'), ORBIT_WIDTHS);
-  }
+  let next = 0;
+  await Promise.all(
+    Array.from({ length: FRAME_JOBS }, async () => {
+      for (let i = next++; i < frames.length; i = next++) {
+        // read-modify-write across an await would lose counts between the parallel jobs
+        const wrote = await ladder(join(tmp, frames[i]), dest, String(i).padStart(ORBIT_DIGITS, '0'), ORBIT_WIDTHS);
+        bytes += wrote;
+        if (i % 250 === 0) process.stdout.write(`\r  ${capture.slug} orbit: ${i}/${frames.length} frames`);
+      }
+    }),
+  );
+  process.stdout.write('\r');
   const lqip = await sharp(join(tmp, frames[0])).resize({ width: 20 }).webp({ quality: 40 }).toBuffer();
+  await rm(tmp, { recursive: true, force: true }); // the extracted JPEGs are gigabytes; the webp ladder is the deliverable
   console.log(`  ${capture.slug} ${capture.date} orbit: ${frames.length} frames → ${MB(bytes)} (${kB(bytes / frames.length)}/frame)`);
 
   return {
     frames: frames.length,
+    digits: ORBIT_DIGITS,
     src: `/assets/${capture.slug}/${capture.date}/orbit`,
     width,
     height,

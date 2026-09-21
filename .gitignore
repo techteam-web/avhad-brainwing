@@ -24,3 +24,7 @@ dist-ssr
 *.sw?
 
 .cache
+
+# Frame sequences the app does not reference. orbit-full holds every frame the drone shot
+# — 1.4 GB across 14,000 files — while the manifest points at the thinned set in orbit/.
+public/assets/*/*/orbit-full

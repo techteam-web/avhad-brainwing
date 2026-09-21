@@ -6,16 +6,34 @@ import { coverRect, preload, srcAt, widthFor } from '../lib/images';
 // <img> sources: one element, no layout, no flicker, and the drawn frame can be held while
 // the next one decodes.
 //
-// Loading is coarse-to-fine — every eighth frame first, so the orbit can be dragged within
-// a second, then the gaps fill in. Anything not yet loaded falls back to the nearest frame
-// that is, so a drag never shows a hole.
+// Every frame the drone shot is on the server — thousands per turn — so they are never all
+// held at once. Two layers do the work:
+//
+//   spine   a coarse pass over the whole turn at the small width, loaded up front and kept.
+//           It is the floor: any frame not loaded yet falls back to the nearest spine frame,
+//           so a drag never shows a hole.
+//   window  the frames either side of the hand, at full width, fetched as it moves and
+//           dropped again once it has gone past, under a fixed memory budget.
+//
+// While the hand is moving the picture comes from the spine alone — one size, evenly
+// spaced, never ahead of the hand — and it sharpens to the full-width frame the moment the
+// hand settles. Drawing whichever frame happened to be loaded, from either layer and
+// either side, is what made a fast drag pulse and jump.
 
 const WIDTHS = [640, 1280];
 const SENSITIVITY = 1; // one drag across the full screen width = one full turn
+const SPINE = 96; // frames of the turn held permanently as the fallback layer
+const SPINE_WIDTH = 640;
+const WINDOW = 60; // full-width frames kept either side of the hand
+const BUDGET = 260e6; // bytes of decoded full-width frames held at once
+const FETCHES = 6; // frame requests in flight
+const SETTLE = 1.2; // frames a tick below which the hand counts as still, and the picture sharpens
+const LOOK = 8; // ticks ahead to aim requests, so a frame arrives before the hand reaches it
+const BEHIND = 6; // full-width frames behind the hand that may stand in for it
 
 export function OrbitStage({ orbit, active = true }) {
   const canvas = useRef(null);
-  const state = useRef({ frame: 0, velocity: 0, dragging: false, loaded: new Set() });
+  const state = useRef({ frame: 0, velocity: 0, speed: 0, dragging: false });
   const [ready, setReady] = useState(0); // 0..1, how much of the orbit has arrived
   const [prompt, setPrompt] = useState(false);
 
@@ -32,9 +50,14 @@ export function OrbitStage({ orbit, active = true }) {
     const s = state.current;
     const total = orbit.frames;
     const width = widthFor(innerWidth, WIDTHS);
+    const digits = orbit.digits ?? 3;
+    // Wheel and arrow keys move by a share of the turn, not by one frame: at thousands of
+    // frames a turn, a single frame is a fraction of a degree.
+    const coarse = Math.max(1, Math.round(total / 96));
     // The orbit has a first and a last frame; it does not wrap around.
     const clamp = (v) => Math.min(Math.max(v, 0), total - 1);
-    const url = (i) => srcAt({ src: `${orbit.src}/${String(clamp(i)).padStart(3, '0')}` }, width);
+    const url = (i, w) => srcAt({ src: `${orbit.src}/${String(clamp(i)).padStart(digits, '0')}` }, w);
+    const spineStep = Math.max(1, Math.floor(total / SPINE));
     let alive = true;
     let raf = 0;
     let dpr = 1;
@@ -58,44 +81,114 @@ export function OrbitStage({ orbit, active = true }) {
       draw();
     };
 
-    const nearest = (i) => {
-      for (let d = 0; d < total; d++) {
-        if (i - d >= 0 && s.loaded.has(i - d)) return i - d;
-        if (i + d < total && s.loaded.has(i + d)) return i + d;
+    const spine = new Map(); // index -> small frame, kept for the life of the orbit
+    const detail = new Map(); // index -> full-width frame, least recently drawn evicted first
+    const inflight = new Map();
+    let held = 0; // decoded bytes in `detail`
+    let drawn = null; // whatever was last painted, so a gap never blanks the canvas
+
+    // On the hand or behind it, never in front: a substitute from ahead sends the picture
+    // the opposite way to the hand for a moment, which is what reads as a glitch.
+    const sharp = (i) => {
+      for (let d = 0; d <= BEHIND; d++) {
+        const img = detail.get(i - d);
+        if (img) {
+          // drawing it marks it as recently used, so the hand's own frames are the last to go
+          detail.delete(i - d);
+          detail.set(i - d, img);
+          return img;
+        }
       }
-      return -1;
+      return null;
+    };
+
+    // The spine, on its own grid and always at or behind the hand, so the frames it gives
+    // out climb and fall with the drag instead of stepping about.
+    const spineAt = (i) => {
+      for (let g = Math.floor(i / spineStep) * spineStep; g >= 0; g -= spineStep) {
+        const img = spine.get(g);
+        if (img) return img;
+      }
+      return null;
     };
 
     const draw = () => {
-      const i = nearest(clamp(Math.round(s.frame)));
-      if (i < 0) return;
-      const img = elements.get(i);
+      const i = clamp(Math.round(s.frame));
+      const img = (s.speed <= SETTLE ? sharp(i) : null) ?? spineAt(i) ?? drawn;
       if (!img) return;
+      drawn = img;
       const { W, H, left, top } = coverRect(el.width, el.height, img.naturalWidth / img.naturalHeight);
       ctx.drawImage(img, left, top, W, H);
     };
 
-    // preload() hands back a promise; keep the decoded element beside it for drawing.
-    const elements = new Map();
-    const load = async (i) => {
-      const k = clamp(i);
-      if (elements.has(k)) return;
-      elements.set(k, null);
-      const img = await preload(url(k));
-      if (!alive) return;
-      elements.set(k, img);
-      s.loaded.add(k);
-      setReady(s.loaded.size / total);
-      if (clamp(Math.round(s.frame)) === k || s.loaded.size < 3) draw();
+    const evict = () => {
+      const here = clamp(Math.round(s.frame));
+      for (const [i, img] of detail) {
+        if (held <= BUDGET) break;
+        if (Math.abs(i - here) <= 4) continue; // never drop what is on screen
+        held -= img.naturalWidth * img.naturalHeight * 4;
+        detail.delete(i);
+      }
     };
 
+    // Frames are asked for from where the hand is about to be, outwards, leaning the way it
+    // is travelling.
+    const pump = () => {
+      const now = clamp(Math.round(s.frame));
+      const here = clamp(Math.round(s.frame + s.velocity * LOOK));
+      const lead = s.velocity > 0.5 ? 1 : s.velocity < -0.5 ? -1 : 0;
+      for (const i of inflight.keys()) {
+        // Outrun. A request cannot truly be called back — setting src to '' fires a fresh
+        // one at the page itself — so it is simply disowned: it stops counting against the
+        // six in flight and its frame is dropped rather than kept when it lands.
+        if (Math.abs(i - now) > WINDOW * 2) inflight.delete(i);
+      }
+      // Mid-drag the spine is what is on screen, so the full-width frames worth fetching are
+      // the few around where the throw will come to rest, not sixty either side of a hand
+      // that is about to be somewhere else.
+      const reach = s.speed > SETTLE ? 10 : WINDOW;
+      for (let d = 0; d <= reach && inflight.size < FETCHES; d++) {
+        for (const dir of d === 0 ? [0] : lead ? [lead, -lead] : [1, -1]) {
+          const i = clamp(here + d * dir);
+          if (detail.has(i) || inflight.has(i)) continue;
+          const img = new Image();
+          img.decoding = 'async';
+          img.src = url(i, width);
+          inflight.set(i, img);
+          img
+            .decode()
+            .then(() => {
+              if (!alive || !inflight.has(i)) return; // disowned while it was in the air
+              detail.set(i, img);
+              held += img.naturalWidth * img.naturalHeight * 4;
+              evict();
+              // only worth repainting for if the hand is settled on it — mid-drag the
+              // spine is what is being drawn
+              if (s.speed <= SETTLE && clamp(Math.round(s.frame)) - i >= 0 && clamp(Math.round(s.frame)) - i <= BEHIND) draw();
+            })
+            .catch(() => {})
+            .finally(() => inflight.delete(i));
+          if (inflight.size >= FETCHES) break;
+        }
+      }
+    };
+
+    // The spine first: the whole turn, coarsely, so it is draggable end to end at once.
     (async () => {
-      for (let i = 0; i < total; i += 8) await load(i); // coarse pass: draggable almost at once
-      for (let i = 0; i < total; i++) if (alive) await load(i);
+      for (let i = 0; i < total; i += spineStep) {
+        if (!alive) return;
+        const img = await preload(url(i, SPINE_WIDTH));
+        if (!alive) return;
+        spine.set(i, img);
+        setReady(Math.min(1, (spine.size * spineStep) / total));
+        if (spine.size < 3 || clamp(Math.round(s.frame)) - i < spineStep) draw();
+      }
+      pump();
     })();
 
     // ---------------------------------------------------------------- interaction
     const step = () => {
+      const was = s.frame;
       if (!s.dragging) {
         // Nothing moves on its own: the orbit sits still until it is dragged, and after a
         // release it only carries the throw's momentum before settling on a frame.
@@ -104,17 +197,22 @@ export function OrbitStage({ orbit, active = true }) {
           s.velocity *= 0.85;
         } else {
           s.velocity = 0;
+          s.speed = 0; // come to rest, and the full-width frame takes over
           s.frame = clamp(Math.round(s.frame));
           draw();
+          pump();
           raf = 0;
           return;
         }
       }
       // Hitting either end stops the throw rather than bouncing or wrapping.
-      const held = clamp(s.frame);
-      if (held !== s.frame) s.velocity = 0;
-      s.frame = held;
+      const at = clamp(s.frame);
+      if (at !== s.frame) s.velocity = 0;
+      s.frame = at;
+      // how fast the hand is actually travelling, smoothed, in frames a tick
+      s.speed = s.speed * 0.55 + Math.abs(s.frame - was) * 0.45;
       draw();
+      pump();
       raf = requestAnimationFrame(step);
     };
     const kick = () => {
@@ -153,13 +251,15 @@ export function OrbitStage({ orbit, active = true }) {
     const onWheel = (e) => {
       if (!live.current) return;
       const d = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
-      s.velocity = Math.max(-4, Math.min(4, s.velocity + d * 0.01));
+      s.velocity = Math.max(-4 * coarse, Math.min(4 * coarse, s.velocity + d * 0.01 * coarse));
       touched();
       kick();
     };
     const onKey = (e) => {
       if (!live.current || !['ArrowLeft', 'ArrowRight'].includes(e.key)) return;
-      s.frame = clamp(s.frame + (e.key === 'ArrowRight' ? 1 : -1));
+      // a plain arrow nudges the turn; with Shift it steps one single frame
+      const stepBy = e.shiftKey ? 1 : coarse;
+      s.frame = clamp(s.frame + (e.key === 'ArrowRight' ? stepBy : -stepBy));
       touched();
       kick();
     };
@@ -176,6 +276,10 @@ export function OrbitStage({ orbit, active = true }) {
 
     return () => {
       alive = false;
+      for (const img of inflight.values()) img.src = '';
+      inflight.clear();
+      detail.clear();
+      spine.clear();
       clearTimeout(idleTimer);
       cancelAnimationFrame(raf);
       el.removeEventListener('pointerdown', onDown);

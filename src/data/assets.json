@@ -3,12 +3,13 @@
     {
       "date": "2026-09-10",
       "orbit": {
-        "frames": 96,
+        "frames": 2228,
+        "digits": 5,
         "src": "/assets/homestead/2026-09-10/orbit",
         "width": 1920,
         "height": 1080,
         "duration": 178.24,
-        "lqip": "data:image/webp;base64,UklGRpAAAABXRUJQVlA4IIQAAAAwBACdASoUAAsAPu1iqU2ppaOiMAgBMB2JYwC06dwAo3uiCEU0ZVG5pAAA/fxQbrWmOWI/tFUE6vBFrGjulCgNMxgQ/IulAteDEXQZ4U8gAdM9v0DBhOHvXn1tQImkvmyh4N43jZhCCY3PrAHWXtVXWJ4BWEXejUAgFDv0nZ/7m7L+IAA="
+        "lqip": "data:image/webp;base64,UklGRpIAAABXRUJQVlA4IIYAAADwAwCdASoUAAsAPu1iqU2ppaOiMAgBMB2JYwC06BayRhN1nLEr3DbwAP38UHlzrymDcu5bLch/TtQ8YDCAFbTTDW03iQYL2Ei0KOfi/e4MC7fGZDO2B6s45R5fyLPmExaJo+lO5pp6ynttwxcghVTfCIrHJ6+33y3ZMY9uCt8OSgm2KQAAAA=="
       },
       "views": {
         "top": [
@@ -270,12 +271,13 @@
     {
       "date": "2026-09-10",
       "orbit": {
-        "frames": 96,
+        "frames": 1264,
+        "digits": 5,
         "src": "/assets/bayline/2026-09-10/orbit",
         "width": 2560,
         "height": 1440,
         "duration": 101.12,
-        "lqip": "data:image/webp;base64,UklGRp4AAABXRUJQVlA4IJIAAAAQBACdASoUAAsAPu1iqU2ppaOiMAgBMB2JQBhQMYJcs3fQrbhoav9oAAD6h7MUdAEuLsYrgobDetK4bADmCZrNqPYsndKGgWqYf+spRk8IoU8j11N24X9Ba1LRdr7SKvJgAFNoA7lPY/rADtz4Ew/pkh/M5Zf9MKZTmrI9ApOB8cBc1UslVRSR3j6fMiqYoDmAAA=="
+        "lqip": "data:image/webp;base64,UklGRqAAAABXRUJQVlA4IJQAAABQAwCdASoUAAsAPu1iqU2ppaQiMAgBMB2JQBhQAc3I0XD6kAD9TWz0VBpQWGof1hDhWXUF+MV5d7+JQoj37F1yB0ssq63abd3197KAvlWUwBowQ77DzEx8oeO1aIMqACIkAfTTc/y/qJDc8Yfgcv5nP7K2RpCit0yg6gcaADLBS4uiLbNC04bnl/EHnvaniG8WLnAA"
       },
       "views": {
         "top": [

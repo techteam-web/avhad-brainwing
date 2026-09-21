@@ -15,7 +15,7 @@ const MODES = [
 export function Project() {
   const { slug } = useParams();
   const project = getProject(slug);
-  if (!project) return <Navigate to="/" replace />;
+  if (!project) return <Navigate to="/developments" replace />;
   return <ProjectView key={slug} project={project} />;
 }
 
@@ -95,18 +95,19 @@ function ProjectView({ project }) {
       {/* a brass hairline drawn across the change, in the direction of the tab */}
       <span ref={sweep} className="pointer-events-none absolute inset-y-0 left-0 z-40 w-px bg-brass opacity-0 shadow-[0_0_24px_6px_rgba(169,136,91,.35)]" />
 
-      {/* The orbit can turn to face a white rooftop, and the wordmark and Index vanish into
-          it. A shallow scrim along the top keeps the masthead readable on every frame. */}
+      {/* The orbit can turn to face a white rooftop, and the wordmark vanishes into it. A
+          band just deep enough to sit behind the masthead keeps it readable on every frame —
+          the photograph itself is left alone. Every control carries its own navy plate. */}
       <span
-        className="pointer-events-none absolute inset-x-0 top-0 z-20 h-[22vh]"
-        style={{ background: 'linear-gradient(to bottom, rgba(9,17,50,.72) 0%, rgba(9,17,50,.34) 42%, rgba(9,17,50,0) 100%)' }}
+        className="pointer-events-none absolute inset-x-0 top-0 z-20 h-[clamp(5rem,11vh,10rem)]"
+        style={{ background: 'linear-gradient(to bottom, rgba(9,17,50,.66) 0%, rgba(9,17,50,.3) 55%, rgba(9,17,50,0) 100%)' }}
       />
 
       {/* masthead */}
       <header className="pointer-events-none absolute inset-x-0 top-0 z-30 flex items-start justify-between gap-4 p-5 md:p-8 3xl:p-10">
         <div className="pointer-events-auto flex items-center gap-4">
           <Link
-            to="/"
+            to="/developments"
             className="panel label group flex items-center gap-2.5 rounded-full px-5 py-2.5 text-brass-lit transition-colors duration-300 hover:bg-brass hover:text-navy-deep"
             aria-label="All developments"
           >
@@ -201,7 +202,6 @@ function Views({ views, active, onOpen }) {
           }`}
         />
       ))}
-      <span className="pointer-events-none absolute inset-0 bg-linear-to-b from-ink/45 via-transparent to-ink/35" />
     </button>
   );
 }

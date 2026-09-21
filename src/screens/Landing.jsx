@@ -3,8 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { Brainwing } from '../components/Brainwing';
-import { PROJECTS, TAGLINE, coverOf, monthYear } from '../data/projects';
-import { srcAt } from '../lib/images';
+import { PROJECTS, TAGLINE, monthYear } from '../data/projects';
 import lockup from '../assets/avhad-lockup.svg';
 import skyline from '../assets/skyline.svg';
 
@@ -69,48 +68,47 @@ export function Landing() {
 
       {/* the two developments, centred — the choice the page exists to offer */}
       <section className="relative z-10 flex min-h-0 flex-1 items-center justify-center gap-6 px-8 py-8 md:gap-9 md:px-14 md:py-10 3xl:gap-12 3xl:px-20">
-        {PROJECTS.map((p, i) => {
-          const cover = coverOf(p);
-          return (
+        {PROJECTS.map((p, i) => (
             <button
               key={p.slug}
               ref={(el) => (plates.current[i] = el)}
               type="button"
               onClick={() => enter(p.slug, i)}
-              className="js-plate group relative h-full max-h-[56vh] w-full max-w-[40rem] origin-center overflow-hidden text-left ring-1 ring-bone/15 transition-[box-shadow,transform] duration-700 hover:-translate-y-1.5 hover:ring-brass/70 3xl:max-w-[46rem]"
+              className="js-plate group relative h-full max-h-[52vh] w-full max-w-[40rem] origin-center overflow-hidden rounded-sm text-left shadow-[0_26px_60px_-30px_rgba(4,8,26,.95)] ring-1 ring-brass/25 transition-[box-shadow,transform] duration-700 hover:-translate-y-1.5 hover:ring-brass/70 3xl:max-w-[46rem]"
             >
-              {cover && (
-                <img
-                  src={srcAt(cover, 1280)}
-                  alt=""
-                  className="absolute inset-0 h-full w-full scale-105 object-cover transition-transform duration-[1800ms] ease-out group-hover:scale-100"
-                />
-              )}
-              {/* only as much scrim as the wordmark needs: solid along the foot, gone by
-                  halfway up, so the aerial itself is what you look at */}
+              {/* No aerial here: the site is what the development's own page opens with. The
+                  index stays brand — the wordmark on deep navy over the survey grid, the
+                  plate lifting to rose gold as it is chosen. */}
+              <span className="plate-field absolute inset-0 transition-opacity duration-700 group-hover:opacity-90" />
               <span
-                className="absolute inset-0 transition-opacity duration-700 group-hover:opacity-85"
-                style={{ background: 'linear-gradient(to top, rgba(9,17,50,.94) 0%, rgba(9,17,50,.8) 20%, rgba(15,27,77,.28) 44%, rgba(15,27,77,0) 72%)' }}
+                className="absolute inset-0 opacity-0 transition-opacity duration-700 group-hover:opacity-100"
+                style={{ background: 'radial-gradient(75% 60% at 50% 42%, rgba(172,124,89,.22), transparent 70%)' }}
               />
 
-              <span className="relative flex h-full flex-col justify-end gap-3.5 p-7 md:p-9">
-                <img
-                  src={p.logo}
-                  alt={p.name}
-                  className={`h-auto ${p.slug === 'homestead' ? 'w-[min(20vw,272px)]' : 'w-[min(10vw,148px)]'}`}
-                />
-                <span className="h-px w-14 bg-brass/70 transition-[width] duration-700 group-hover:w-24" />
-                <span className="flex items-baseline justify-between gap-5">
-                  <span className="label-micro text-bone/60">{p.place} · {p.blurb}</span>
-                  <span className="label-micro flex shrink-0 items-center gap-2.5 text-brass opacity-0 transition-opacity duration-500 group-hover:opacity-100 max-md:hidden">
-                    View progress
-                    <span className="h-px w-6 bg-brass" />
+              <span className="relative flex h-full flex-col p-7 md:p-9">
+                <span className="flex min-h-0 flex-1 items-center justify-center">
+                  <img
+                    src={p.logo}
+                    alt={p.name}
+                    className={`h-auto max-h-full transition-transform duration-700 ease-out group-hover:scale-[1.03] ${
+                      p.slug === 'homestead' ? 'w-[min(24vw,320px)]' : 'w-[min(15vw,212px)]'
+                    }`}
+                  />
+                </span>
+
+                <span className="flex flex-col gap-3.5">
+                  <span className="h-px w-14 bg-brass/70 transition-[width] duration-700 group-hover:w-24" />
+                  <span className="flex items-baseline justify-between gap-5">
+                    <span className="label-micro text-bone/60">{p.place} · {p.blurb}</span>
+                    <span className="label-micro flex shrink-0 items-center gap-2.5 text-brass opacity-0 transition-opacity duration-500 group-hover:opacity-100 max-md:hidden">
+                      View progress
+                      <span className="h-px w-6 bg-brass" />
+                    </span>
                   </span>
                 </span>
               </span>
             </button>
-          );
-        })}
+        ))}
       </section>
 
       {/* the line the company closes on */}

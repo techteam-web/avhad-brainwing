@@ -90,7 +90,3 @@ export function viewsOf(capture) {
   return present.map((v, i) => ({ ...v, photo: chosen[i], altitude: Math.round(chosen[i].altitude ?? 0) }));
 }
 
-export const coverOf = (project) => {
-  const capture = project.captures.find((c) => !c.upcoming);
-  return capture ? (viewsOf(capture)[0]?.photo ?? null) : null;
-};
