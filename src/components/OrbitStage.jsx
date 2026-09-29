@@ -312,8 +312,9 @@ export function OrbitStage({ orbit, active = true }) {
         </p>
       )}
 
+      {/* on narrow screens the foot is the dock's, so the count sits under the prompt */}
       {ready < 0.999 && (
-        <div className="pointer-events-none absolute inset-x-0 bottom-8 z-20 text-center">
+        <div className="pointer-events-none absolute inset-x-0 top-[calc(50%+6rem)] z-20 text-center wide:top-auto wide:bottom-8">
           <p className="label-micro text-bone/70 [text-shadow:0_1px_10px_rgba(16,21,43,.9)]">Loading orbit · {Math.round(ready * 100)}%</p>
         </div>
       )}
@@ -324,6 +325,9 @@ export function OrbitStage({ orbit, active = true }) {
     </>
   );
 }
+
+// A finger has no wheel to scroll, so a touch screen is only told to drag.
+const touch = typeof matchMedia !== 'undefined' && matchMedia('(pointer: coarse)').matches;
 
 // Shown when the orbit has been sitting untouched. A wash breathes up out of the
 // photograph so the mark reads against it, a hand travels left to right, and both fade
@@ -378,7 +382,7 @@ function DragPrompt({ show }) {
           </span>
         </div>
 
-        <p ref={copy} className="label-micro mt-7 text-center text-bone/85 opacity-0">Drag or scroll to turn the orbit</p>
+        <p ref={copy} className="label-micro mt-7 px-6 text-center text-bone/85 opacity-0">{touch ? 'Drag to turn the orbit' : 'Drag or scroll to turn the orbit'}</p>
       </div>
     </div>
   );

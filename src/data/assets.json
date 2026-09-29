@@ -33,7 +33,7 @@
             "altitude": 138.77,
             "pitch": -90,
             "zoom": 1,
-            "lqip": "data:image/webp;base64,UklGRmwAAABXRUJQVlA4IGAAAAAQBACdASoUAAsAPu1iqU2ppaQiMAgBMB2JZQAAV9Cmo5FXn3ar9ttoAAD+6PBZfGYiflHW+7n6yYJ+TfkMnNGQmDPczQ7wgLCrK7MA65NhNkNQ6owmgYCVndfqpU9+AAA="
+            "lqip": "data:image/webp;base64,UklGRmYAAABXRUJQVlA4IFoAAACQAwCdASoUAAsAPu1iqU2ppaOiMAgBMB2JYwAAMgZ+ppL4JPUAAP7o8FmGVQed0E1PW+T1ez4Gdgymww40FKRUjNF4BvqpDCWucmqthc0HAAdNwJf+xpcKwAA="
           },
           {
             "id": "homestead-2026-09-10-02",
@@ -101,7 +101,7 @@
             "altitude": 103.841,
             "pitch": -43.2,
             "zoom": 1,
-            "lqip": "data:image/webp;base64,UklGRl4AAABXRUJQVlA4IFIAAADQAwCdASoUAAsAPu1iqU2ppaOiMAgBMB2JZwAAQZAoaGhZyn+xGyQA/tzU4i4KlY2DQgmZHoSXo9HbMDsOAc0rYiWpDjWEIqjTyC8yJD5HYcAA"
+            "lqip": "data:image/webp;base64,UklGRmAAAABXRUJQVlA4IFQAAAAwBACdASoUAAsAPu1iqU2ppaOiMAgBMB2JZQDImBhzLQLP2rYwWVIbigAA/tzU4i4KlY2DQgmZI3cLea21mT3ZTi60p0yH2s+ULitlbu9WsAHXgAA="
           }
         ],
         "south": [
@@ -114,7 +114,7 @@
             "altitude": 114.726,
             "pitch": -48.2,
             "zoom": 1,
-            "lqip": "data:image/webp;base64,UklGRmIAAABXRUJQVlA4IFYAAACwAwCdASoUAAsAPu1iqU2ppaQiMAgBMB2JZQAATvwjLYliyyBC9AD+40n4zRQwMiTh+IaVrDrerr2ny/fEXmdOI5em2DtEG3VUAQR8uR0Uj11vE6OAAA=="
+            "lqip": "data:image/webp;base64,UklGRmQAAABXRUJQVlA4IFgAAAAQBACdASoUAAsAPu1iqU2ppaOiMAgBMB2JZQDCgB0+ndJU21e3ZHSIAAD+40n4zRQwMjHHkl5PQk6xPdf32NIq7QsR4ly7Xwvwid83y+4aJ6bWvh8UYAAA"
           },
           {
             "id": "homestead-2026-09-10-12",
@@ -193,7 +193,7 @@
             "altitude": 163.647,
             "pitch": -61.1,
             "zoom": 1,
-            "lqip": "data:image/webp;base64,UklGRmQAAABXRUJQVlA4IFgAAADwAwCdASoUAAsAPu1iqU2ppaOiMAgBMB2JZwAARe65BruW597gYZwAAP7o8OIsviyLDdHWRJwlvwE94URGyX+M7SRiTofg2tbueCyh+Gy8hLaaIACAi5AA"
+            "lqip": "data:image/webp;base64,UklGRmgAAABXRUJQVlA4IFwAAADQAwCdASoUAAsAPu1iqU2ppaQiMAgBMB2JZwAAReXNe4oxVI7S+oAA/ujw4ix+pqgmT5ULL2SsVw1M8+i7Agm+fhz6dyeLp55T1YIAj3Erq5AEgAx4LTvGhQAAAA=="
           }
         ],
         "north": [
@@ -239,7 +239,7 @@
             "altitude": 132.301,
             "pitch": -54.1,
             "zoom": 1,
-            "lqip": "data:image/webp;base64,UklGRmAAAABXRUJQVlA4IFQAAABQAwCdASoUAAsAPu1iqU2ppaOiMAgBMB2JZQDG9A/cFlUSoAD+2nOS9eKdkGjznOqKHLJuywXjmBEKE2UXt/+bz8qWzwIspXJju+X+sOXmlsYCgAA="
+            "lqip": "data:image/webp;base64,UklGRmAAAABXRUJQVlA4IFQAAABQAwCdASoUAAsAPu1iqU2ppaOiMAgBMB2JZQAAKoDcmmB4AAD+2nOS9eKK1u7LwmHj/qf1gBiwA6aJEJfDOSVlDsudRkEl/tLOtoBeWreHQ3KIAAA="
           },
           {
             "id": "homestead-2026-09-10-21",
@@ -290,7 +290,7 @@
             "altitude": 141.709,
             "pitch": -90,
             "zoom": 1,
-            "lqip": "data:image/webp;base64,UklGRmYAAABXRUJQVlA4IFoAAADQAwCdASoUAAsAPu1iqU2ppaQiMAgBMB2JZQAATreDjmLTwN/KYIgA/uX0xxuR2nm4y9kj7+pbE74DfEtERSgIKNKvNHRQhvxd1z2xCv41QY2GSA05bA0KAAA="
+            "lqip": "data:image/webp;base64,UklGRmYAAABXRUJQVlA4IFoAAADQAwCdASoUAAsAPu1iqU2ppaOiMAgBMB2JZQAAQw1gvhduM/YjVgAA/uX0xxkybstpYTPMbq9O9GfQ8y1Axn34qXkiNqwr0X3xrak6bO24euD5EPebm2dQgAA="
           },
           {
             "id": "bayline-2026-09-10-01",
@@ -325,7 +325,7 @@
             "altitude": 142.221,
             "pitch": -64.6,
             "zoom": 1,
-            "lqip": "data:image/webp;base64,UklGRmYAAABXRUJQVlA4IFoAAADQAwCdASoUAAsAPu1iqU2ppaOiMAgBMB2JZwAAUrY1ZLlAMfIpFaAA/uWhiqfRz2RrahMPAPPHKY70QPs5DmXvcg4uZ2YHUa53nqB9hixtozGzJ4JyCJYoAAA="
+            "lqip": "data:image/webp;base64,UklGRmoAAABXRUJQVlA4IF4AAACwAwCdASoUAAsAPu1iqU2ppaOiMAgBMB2JZwAASoMq7eTyhOQggAD+5aGKp9LxCS/NxJHJbaMtJ7iigS8rqDv6wusLxjLl0DJ0WoaGjtkR1nGSeCxNNi+DNHr3I4AA"
           }
         ],
         "north": [
@@ -349,7 +349,7 @@
             "altitude": 141.391,
             "pitch": -59.3,
             "zoom": 1,
-            "lqip": "data:image/webp;base64,UklGRmIAAABXRUJQVlA4IFYAAADwAwCdASoUAAsAPu1iqU2ppaOiMAgBMB2JZwAASojRSJGMe5DdfIsAAP7lm6gCQxkW0ujr6Vd/UlknkqP1Fuel4dB1RtkMU4Y9757sHlqY0NrHOhQAAA=="
+            "lqip": "data:image/webp;base64,UklGRmoAAABXRUJQVlA4IF4AAACQAwCdASoUAAsAPu1iqU2ppaQiMAgBMB2JZwAAOwp6K1bERsAAAP7p0x4j+N2DDH4vNhwBrkXaj7nF+IfqEeiW4KNAxh8JQFtTOkMvkJhoBWgCH7V5B6GwdejlDgAA"
           }
         ],
         "west": [
@@ -362,7 +362,7 @@
             "altitude": 150.12,
             "pitch": -49.5,
             "zoom": 1,
-            "lqip": "data:image/webp;base64,UklGRmYAAABXRUJQVlA4IFoAAADQAwCdASoUAAsAPu1iqU2ppaQiMAgBMB2JZwDKAB4YOGG8VYST8gAA/txqEctd+9PBUDq2bZK9gz0AuGD6XUqeINp9+i7Vcrx0hUrjLxEKpgKfpWhepUaEAAA="
+            "lqip": "data:image/webp;base64,UklGRmgAAABXRUJQVlA4IFwAAADwAwCdASoUAAsAPu1iqU2ppaQiMAgBMB2JZQAAUVwTnwBPIWSZK3OAAP7cahHLcfmelVnpgxlL/m9re8ILd9wKXP4VCqUCJvnYOxl5IlErmJxBb0kvjuc5dgVQAA=="
           },
           {
             "id": "bayline-2026-09-10-09",
@@ -397,7 +397,7 @@
             "altitude": 157.495,
             "pitch": -59,
             "zoom": 1,
-            "lqip": "data:image/webp;base64,UklGRmQAAABXRUJQVlA4IFgAAACQAwCdASoUAAsAPu1iqU2ppaQiMAgBMB2JZwDImBPnQ6oA/P6AAP7o776BWscTf6/m5L9ale00WZ8Dp3YMkZWvlOxScFm5Ja+0WoVdLxgqNyI5Dvs/SgAA"
+            "lqip": "data:image/webp;base64,UklGRmgAAABXRUJQVlA4IFwAAACwAwCdASoUAAsAPu1iqU2ppaOiMAgBMB2JZQDG9BTEA+6Hra/EgAD+6PA/0siHXPCuUEi51GManzVydEz5OOUVMl1jYhj47bznoPN85X+9rSDd4EZjEMyHDvowAA=="
           },
           {
             "id": "bayline-2026-09-10-10",

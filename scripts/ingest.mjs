@@ -19,7 +19,7 @@
 // Output: public/assets/<project>/<date>/… + src/data/assets.json
 
 import { mkdir, readdir, readFile, writeFile, rm, stat } from 'node:fs/promises';
-import { join, dirname } from 'node:path';
+import { basename, join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
@@ -34,7 +34,19 @@ const MANIFEST = join(ROOT, 'src/data/assets.json');
 // Retouched photographs come back from the editor under their original camera names, and
 // exports can strip the drone's metadata. So a retouched file supplies only the pixels:
 // the view, altitude and angle are still read from the original beside it.
-const REVISED = '/Users/Arsalan/Downloads/avhad-asset';
+// This pass has the plot outlined. It came back as PNGs, a folder per development, with
+// `_edit` after the camera name — the earlier, unoutlined pass is in ~/Downloads/avhad-asset.
+const REVISED = '/Users/Arsalan/Downloads/avhad-views';
+
+// camera name (no extension, no _edit) -> the retouched file, wherever it sits under REVISED
+async function retouchedFiles() {
+  const found = new Map();
+  for (const f of await readdir(REVISED, { recursive: true }).catch(() => [])) {
+    const m = basename(f).match(/^(DJI_\d+_\d+_D)(?:_edit)?\.(?:jpe?g|png)$/i);
+    if (m) found.set(m[1], join(REVISED, f));
+  }
+  return found;
+}
 
 const CAPTURES = [
   {
@@ -127,7 +139,9 @@ async function ladder(input, dest, name, widths) {
   await Promise.all(
     widths.map(async ({ w, q }) => {
       const file = join(dest, `${name}-${w}.webp`);
-      await sharp(input).rotate().resize({ width: w, withoutEnlargement: true }).webp({ quality: q, effort: 5, smartSubsample: true }).toFile(file);
+      // removeAlpha: a PNG export can carry an alpha channel that is opaque throughout,
+      // which would only add weight to every webp made from it
+      await sharp(input).rotate().removeAlpha().resize({ width: w, withoutEnlargement: true }).webp({ quality: q, effort: 5, smartSubsample: true }).toFile(file);
       bytes += (await stat(file)).size;
     }),
   );
@@ -141,19 +155,20 @@ async function stills(capture) {
   const views = {};
   let bytes = 0;
 
-  const revised = new Set(await readdir(REVISED).catch(() => []));
+  const revised = await retouchedFiles();
   let retouched = 0;
 
   for (const [i, file] of files.entries()) {
     const buf = await readFile(join(capture.dir, file)); // the original: telemetry comes from here
-    const pixels = revised.has(file) ? await readFile(join(REVISED, file)) : buf;
+    const edit = revised.get(file.replace(/\.jpe?g$/i, ''));
+    const pixels = edit ? await readFile(edit) : buf;
     if (pixels !== buf) retouched++;
     const meta = await sharp(buf).metadata();
     const tel = telemetry(buf);
     const view = viewOf(tel);
     const n = String(i + 1).padStart(2, '0');
     bytes += await ladder(pixels, dest, n, STILL_WIDTHS);
-    const lqip = await sharp(pixels).resize({ width: 20 }).webp({ quality: 40 }).toBuffer();
+    const lqip = await sharp(pixels).removeAlpha().resize({ width: 20 }).webp({ quality: 40 }).toBuffer();
     (views[view] ??= []).push({
       id: `${capture.slug}-${capture.date}-${n}`,
       src: `/assets/${capture.slug}/${capture.date}/stills/${n}`,

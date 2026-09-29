@@ -47,6 +47,25 @@
   --breakpoint-5xl: 240rem; /* 3840 — 4K wall */
 }
 
+/* A development's page has two layouts, and width alone cannot choose between them: an
+   upright tablet is as wide as a small laptop, and a phone on its side is wider than
+   either is tall. Narrow — phones, and tablets held upright — is the default, with the
+   controls in a dock along the foot, under the thumb. Wide — laptops, tablets on their
+   side, phones turned landscape — keeps the masthead row and the date rail. */
+@custom-variant wide {
+  @media (min-width: 64rem), (orientation: landscape) {
+    @slot;
+  }
+}
+
+/* A phone on its side: wide, but with barely any height to spend, so the controls move
+   out to the edges and leave the middle to the photograph. */
+@custom-variant short {
+  @media (orientation: landscape) and (max-height: 32rem) {
+    @slot;
+  }
+}
+
 @layer base {
   /* It never scrolls vertically. Clip, not hidden: hidden still lets focus or
      find-in-page shift the page. */

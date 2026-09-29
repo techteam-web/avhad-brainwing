@@ -2,7 +2,8 @@ import logo from '/images/brainwing.webp';
 
 // The maker's mark, bottom right on every screen. The size ramp is the one the hariko
 // project uses for the same logo — it grows through the phone sizes, settles back once
-// there is a real desktop viewport, then climbs again for kiosk displays.
+// there is a real desktop viewport, then climbs again for kiosk displays. A phone on its
+// side is wide enough for the tablet size but has no height for it, so it stays small.
 //
 // The artwork is flattened to a silhouette and tinted for whatever it sits on: ink on the
 // paper index, bone over the photographs.
@@ -24,6 +25,7 @@ export function Brainwing({ tone = 'bone' }) {
         3xl:bottom-2 3xl:right-8 3xl:w-32
         4xl:bottom-3 4xl:right-10 4xl:w-40
         5xl:right-12 5xl:w-56
+        short:w-24
         ${TONE[tone]}`}
     />
   );

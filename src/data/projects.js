@@ -1,4 +1,5 @@
 import assets from './assets.json';
+import { RERA } from './legal';
 
 // Everything about a project that is not an asset. The captures themselves — their dates,
 // the orbit, the 3D scene and the stills grouped by compass view — come from
@@ -39,6 +40,27 @@ const ORBIT_ARCS = {
   bayline: { '2026-09-10': [] },
 };
 
+// Where the plot is in each outlined photograph: the box around the editor's gold outline,
+// as fractions of the frame — left, top, right, bottom. A narrow screen crops a landscape
+// photograph hard, so the page uses this to keep the whole outline in view.
+//
+// Measured once rather than guessed: each outlined photograph differenced against the same
+// photograph before the outline went on (~/Downloads/avhad-asset). The grade is identical,
+// so the outline is the only thing that changed. A photograph not listed is framed on its
+// centre, as before.
+const PLOTS = {
+  'homestead-2026-09-10-03': [0.402, 0.293, 0.585, 0.703],
+  'homestead-2026-09-10-08': [0.427, 0.365, 0.585, 0.659],
+  'homestead-2026-09-10-11': [0.409, 0.404, 0.62, 0.627],
+  'homestead-2026-09-10-13': [0.433, 0.35, 0.57, 0.604],
+  'homestead-2026-09-10-22': [0.384, 0.391, 0.596, 0.641],
+  'bayline-2026-09-10-02': [0.304, 0.204, 0.747, 0.904],
+  'bayline-2026-09-10-03': [0.296, 0.272, 0.73, 0.867],
+  'bayline-2026-09-10-06': [0.299, 0.174, 0.652, 0.788],
+  'bayline-2026-09-10-08': [0.304, 0.274, 0.641, 0.714],
+  'bayline-2026-09-10-11': [0.326, 0.213, 0.668, 0.771],
+};
+
 // From the brand guidelines.
 export const TAGLINE = 'Building Landmarks. Creating Legacies.';
 
@@ -61,7 +83,12 @@ export const PROJECTS = Object.entries(META).map(([slug, meta]) => {
     orbit: c.orbit ? { ...c.orbit, arcs: ORBIT_ARCS[slug]?.[c.date] ?? [] } : null,
   }));
   const planned = PLANNED.filter((date) => !shot.some((c) => c.date === date)).map((date) => ({ date, upcoming: true, views: {}, orbit: null }));
-  return { slug, ...meta, captures: [...shot, ...planned].sort((a, b) => a.date.localeCompare(b.date)) };
+  return {
+    slug,
+    ...meta,
+    rera: RERA.find((r) => r.slug === slug) ?? null,
+    captures: [...shot, ...planned].sort((a, b) => a.date.localeCompare(b.date)),
+  };
 });
 
 export const getProject = (slug) => PROJECTS.find((p) => p.slug === slug);
@@ -107,6 +134,6 @@ export function viewsOf(capture) {
     if (score < best - 1e-9) [best, chosen] = [score, set];
   }
 
-  return present.map((v, i) => ({ ...v, photo: chosen[i], altitude: Math.round(chosen[i].altitude ?? 0) }));
+  return present.map((v, i) => ({ ...v, photo: chosen[i], plot: PLOTS[chosen[i].id] ?? null, altitude: Math.round(chosen[i].altitude ?? 0) }));
 }
 
