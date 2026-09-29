@@ -10,9 +10,11 @@ import skyline from '../assets/skyline.svg';
 
 gsap.registerPlugin(useGSAP);
 
-// The way in. The group announces itself, the regulator's details sit under it, and one
-// button opens the progress record. Each block below appears on its own once
-// src/data/legal.js has it; the registrations are in, the about and the notice are not.
+// The way in. The group announces itself and one button opens the progress record — the
+// only thing on the page that looks as though it can be pressed. The regulator's details
+// are there to be read, not chosen between, so they stand apart from it: a plate in the
+// bottom corner of a wide screen, fine print along the foot of a phone. Each block appears
+// on its own once src/data/legal.js has it; the about and the notice are not in yet.
 export function Gate() {
   const root = useRef(null);
   const navigate = useNavigate();
@@ -49,11 +51,13 @@ export function Gate() {
       />
 
       {/* The content scrolls within the page rather than the page itself: the app never
-          scrolls, and the registrations and the notice can run long once they arrive. */}
-      <div className="relative z-10 flex min-h-0 flex-1 flex-col overflow-y-auto px-6 py-10 text-center sm:px-10 md:px-14 md:py-14 md:pb-20 short:py-6 3xl:px-20">
+          scrolls, and the notice can run long once it arrives. */}
+      <div className="relative z-10 flex min-h-0 flex-1 flex-col overflow-y-auto">
         {/* m-auto, not justify-center: a centred flex child that outgrows its scroller has
-            its top clipped beyond reach, and the copy below will outgrow a phone. */}
-        <div className="m-auto flex w-full max-w-[64rem] flex-col items-center">
+            its top clipped beyond reach. On a wide screen the foot is kept free for the
+            registrations, which lifts the centre a little; on a phone on its side they
+            take the left, and this centres in what is left of the width. */}
+        <div className="m-auto flex w-full max-w-[64rem] flex-col items-center px-6 py-10 text-center sm:px-10 md:px-14 md:pb-40 md:pt-14 short:py-6 short:pl-[calc(max(1rem,env(safe-area-inset-left))+20.5rem)] short:pr-6 3xl:px-20">
           <img
             src={lockup}
             alt="Avhad Real Estate Developers"
@@ -61,7 +65,7 @@ export function Gate() {
           />
 
           {/* two deliberate lines, as the brochure sets it, rather than an accidental wrap */}
-          <h1 className="js-rise mt-8 text-hero leading-[1.06] md:mt-10 short:mt-4">
+          <h1 className="js-rise mt-8 text-hero leading-[1.06] md:mt-10 short:mt-4 short:text-[1.75rem]">
             {first}.
             <span className="mt-1 block text-brass">{second}</span>
           </h1>
@@ -74,44 +78,10 @@ export function Gate() {
             </div>
           )}
 
-          {RERA.length > 0 && (
-            <section className="js-rise mt-9 w-full md:mt-12 short:mt-6">
-              <p className="label-micro text-brass">Maharashtra RERA</p>
-              <span className="mx-auto mt-4 block h-px w-14 bg-brass/40" />
-              <ul className="mx-auto mt-5 flex max-w-md flex-col items-stretch gap-3 sm:max-w-none sm:flex-row sm:justify-center sm:gap-4">
-                {RERA.map((r) => (
-                  <li key={r.number} className="panel flex flex-1 items-center gap-4 rounded-2xl p-3.5 pr-5 text-left sm:max-w-[24rem] sm:gap-5 sm:p-4 sm:pr-6">
-                    {/* the certificate's own code, on its white ground so a camera can read it */}
-                    {r.qr && <img src={r.qr} alt={`MahaRERA QR code for ${r.project}`} className="size-22 shrink-0 rounded-lg sm:size-24" />}
-                    <div className="min-w-0">
-                      <p className="label text-bone">{r.project}</p>
-                      <p className="label-micro mt-2 text-brass-lit">{r.number}</p>
-                      {r.validUntil && <p className="label-micro mt-1.5 text-bone/45">Valid until {longDate(r.validUntil)}</p>}
-                      {r.url && (
-                        <a
-                          href={r.url}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="label-micro mt-2.5 inline-flex items-center gap-2 text-bone/70 transition-colors hover:text-brass-lit"
-                        >
-                          Verify
-                          <span className="h-px w-5 bg-current" />
-                        </a>
-                      )}
-                    </div>
-                  </li>
-                ))}
-              </ul>
-              <a href={RERA_SITE} target="_blank" rel="noreferrer" className="mt-4 inline-block text-micro text-bone/45 transition-colors hover:text-bone/80">
-                {RERA_SITE.replace('https://', '')}
-              </a>
-            </section>
-          )}
-
           <button
             type="button"
             onClick={enter}
-            className="js-rise label group mt-10 inline-flex items-center gap-4 rounded-full bg-brass px-8 py-4 text-navy-deep transition-colors duration-300 hover:bg-brass-lit md:mt-14 md:px-10 md:py-4.5 short:mt-7"
+            className="js-rise label group mt-10 inline-flex w-full max-w-80 items-center justify-center gap-4 rounded-full bg-brass px-8 py-4 text-navy-deep shadow-[0_18px_40px_-18px_rgba(172,124,89,.8)] transition-colors duration-300 hover:bg-brass-lit sm:w-auto sm:max-w-none md:mt-12 md:px-10 md:py-4.5 short:mt-6 short:py-3.5"
           >
             Enter experience
             <span className="inline-block transition-transform duration-500 group-hover:translate-x-1.5">→</span>
@@ -119,9 +89,94 @@ export function Gate() {
 
           {NOTICE && <p className="js-rise mt-10 max-w-[70ch] text-micro leading-relaxed text-bone/40">{NOTICE}</p>}
         </div>
+
+        {RERA.length > 0 && <FinePrint />}
       </div>
+
+      {RERA.length > 0 && <Plate />}
 
       <Brainwing tone="bone" />
     </main>
+  );
+}
+
+// Wide screens, and phones on their side: one plate in the bottom-left corner, the two
+// registrations in it one above the other. The link to the regulator is the only thing
+// in it that goes anywhere, and it says so with its arrow.
+function Plate() {
+  return (
+    <aside
+      aria-label="MahaRERA registrations"
+      className="js-rise absolute bottom-8 left-8 z-20 hidden w-86 rounded-2xl border border-bone/12 bg-navy-deep/80 p-5 shadow-[0_24px_60px_-28px_rgba(4,8,26,.95)] md:block short:bottom-3 short:left-[max(1rem,env(safe-area-inset-left))] short:block short:w-78 short:p-4 3xl:bottom-10 3xl:left-10"
+    >
+      <div className="flex items-center gap-3">
+        <p className="label-micro text-brass">Maharashtra RERA</p>
+        <span className="h-px flex-1 bg-bone/15" />
+      </div>
+      <ul className="mt-4 divide-y divide-bone/10 short:mt-3">
+        {RERA.map((r) => (
+          <li key={r.number} className="flex items-center gap-4 py-3.5 first:pt-0 short:py-2.5">
+            {/* the certificate's own code, on its white ground so a camera can read it */}
+            <img src={r.qr} alt={`MahaRERA QR code for ${r.project}`} className="size-17 shrink-0 rounded-md short:size-14" />
+            <Registration r={r} />
+          </li>
+        ))}
+      </ul>
+      <Regulator className="mt-1.5" />
+    </aside>
+  );
+}
+
+// Phones held upright: fine print along the foot, under a titled rule, with no plate
+// round it — nothing here is a card to tap, so nothing is drawn like one.
+function FinePrint() {
+  return (
+    <aside
+      aria-label="MahaRERA registrations"
+      className="js-rise shrink-0 bg-[linear-gradient(to_top,rgba(9,17,50,.9),rgba(9,17,50,.7)_65%,transparent)] px-6 pb-[calc(max(0.75rem,env(safe-area-inset-bottom))+2.5rem)] pt-8 md:hidden short:hidden"
+    >
+      <div className="mx-auto max-w-84">
+        <div className="flex items-center gap-3">
+          <span className="h-px flex-1 bg-bone/15" />
+          <p className="label-micro text-bone/55">Maharashtra RERA</p>
+          <span className="h-px flex-1 bg-bone/15" />
+        </div>
+        <ul className="mt-4 flex flex-col gap-3">
+          {RERA.map((r) => (
+            <li key={r.number} className="flex items-center gap-3.5">
+              <img src={r.qr} alt={`MahaRERA QR code for ${r.project}`} className="size-13 shrink-0 rounded" />
+              <Registration r={r} />
+            </li>
+          ))}
+        </ul>
+        <Regulator className="mt-4 justify-center" />
+      </div>
+    </aside>
+  );
+}
+
+function Registration({ r }) {
+  return (
+    <div className="min-w-0 text-left">
+      <p className="label-micro text-bone/90">{r.project}</p>
+      <p className="label-micro mt-1 text-brass-lit/90">{r.number}</p>
+      {r.validUntil && <p className="label-micro mt-1 text-bone/45">Valid until {longDate(r.validUntil)}</p>}
+    </div>
+  );
+}
+
+function Regulator({ className = '' }) {
+  return (
+    <a
+      href={RERA_SITE}
+      target="_blank"
+      rel="noreferrer"
+      className={`flex items-center gap-2.5 py-1.5 text-micro font-normal text-bone/80 transition-colors duration-300 hover:text-bone ${className}`}
+    >
+      <svg viewBox="0 0 24 24" className="size-3.5 shrink-0" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden="true">
+        <path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+      {RERA_SITE.replace('https://', '')}
+    </a>
   );
 }

@@ -68,15 +68,16 @@ export function Landing() {
       </header>
 
       {/* the two developments, centred — the choice the page exists to offer: one above the
-          other on a phone, side by side from there up */}
-      <section className="relative z-10 flex min-h-0 flex-1 flex-col items-center justify-center gap-4 px-6 py-5 sm:flex-row sm:gap-6 sm:px-8 sm:py-8 md:gap-9 md:px-14 md:py-10 short:py-3 3xl:gap-12 3xl:px-20">
+          other on a phone, side by side from there up. On a phone they run down to the foot,
+          stopping clear of the maker's mark. */}
+      <section className="relative z-10 flex min-h-0 flex-1 flex-col items-center justify-center gap-4 px-6 pb-[calc(max(0.75rem,env(safe-area-inset-bottom))+2.25rem)] pt-5 sm:flex-row sm:gap-6 sm:px-8 sm:py-8 md:gap-9 md:px-14 md:py-10 short:pb-10 short:pt-3 3xl:gap-12 3xl:px-20">
         {PROJECTS.map((p, i) => (
             <button
               key={p.slug}
               ref={(el) => (plates.current[i] = el)}
               type="button"
               onClick={() => enter(p.slug, i)}
-              className="js-plate group relative max-h-[34vh] min-h-0 w-full max-w-[40rem] flex-1 origin-center overflow-hidden rounded-sm text-left shadow-[0_26px_60px_-30px_rgba(4,8,26,.95)] ring-1 ring-brass/25 transition-[box-shadow,transform] duration-700 hover:-translate-y-1.5 hover:ring-brass/70 sm:h-full sm:max-h-[52vh] 3xl:max-w-[46rem]"
+              className="js-plate group relative max-h-[38vh] min-h-0 w-full max-w-[40rem] flex-1 origin-center overflow-hidden rounded-sm text-left shadow-[0_26px_60px_-30px_rgba(4,8,26,.95)] ring-1 ring-brass/25 transition-[box-shadow,transform] duration-700 hover:-translate-y-1.5 hover:ring-brass/70 sm:h-full sm:max-h-[52vh] 3xl:max-w-[46rem]"
             >
               {/* No aerial here: the site is what the development's own page opens with. The
                   index stays brand — the wordmark on deep navy over the survey grid, the
@@ -119,17 +120,13 @@ export function Landing() {
         ))}
       </section>
 
-      {/* the line the company closes on */}
-      {/* the foot stands clear of the maker's mark, which on a phone spans most of the line */}
-      <section className="relative z-10 shrink-0 px-6 pb-[calc(max(0.75rem,env(safe-area-inset-bottom))+2.25rem)] text-center sm:px-8 md:px-14 md:pb-11 short:pb-4 3xl:pb-14">
+      {/* The line the company closes on, standing clear of the maker's mark. Not on a phone,
+          either way up: the gate has just said it, and the plates need the height. */}
+      <section className="relative z-10 shrink-0 px-6 pb-[calc(max(0.75rem,env(safe-area-inset-bottom))+2.25rem)] text-center max-sm:hidden sm:px-8 md:px-14 md:pb-11 short:hidden 3xl:pb-14">
         <h1 className="js-tag text-hero leading-[1.05]">
-          {first}. <span className="text-brass max-sm:block">{second}</span>
+          {first}. <span className="text-brass">{second}</span>
         </h1>
-        {/* on a phone the skyline's ground line runs straight through this, so it is set a
-            weight heavier there, with a shadow to lift it off the drawing */}
-        <p className="js-tag mt-3 text-balance text-body text-bone/70 max-sm:font-normal max-sm:[text-shadow:0_1px_12px_rgba(9,17,50,.95)] sm:mt-3.5 short:hidden">
-          Two developments in Mahim, flown by drone every quarter.
-        </p>
+        <p className="js-tag mt-3.5 text-balance text-body text-bone/70">Two developments in Mahim, flown by drone every quarter.</p>
       </section>
 
       <Brainwing tone="bone" />
