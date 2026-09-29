@@ -29,15 +29,18 @@ const META = {
 // each pair a first and a last, and they play one after another as the orbit is dragged —
 // everything outside them is skipped. An empty list shows the whole turn.
 const ORBIT_ARCS = {
-  // Four arcs, one per reference pair, matched frame by frame to the stills chosen off the
-  // page. The towers between them, which stand in front of the plot, are skipped.
+  // The whole turn, as the editor cut it. Their cut outlines the plot all the way round,
+  // so it can be followed even where a tower passes in front of it.
   //
-  // Found automatically first, by reading the middle of every frame — open ground means the
-  // plot is visible, a flat bright wall means a tower is in the way. That pass gave
-  // [[158, 486], [780, 957], [1098, 1297], [1670, 1869]], which is what to go back to if
-  // the matched arcs below read worse.
-  homestead: { '2026-09-10': [[158, 486], [780, 957], [1098, 1297], [1670, 1869]] },
-  bayline: { '2026-09-10': [] },
+  // The raw flight this replaced was trimmed to four arcs where the plot stood clear of the
+  // towers — [[158, 486], [780, 957], [1098, 1297], [1670, 1869]] — found by reading the
+  // middle of every frame: open ground means the plot is visible, a flat bright wall means
+  // a tower is in the way. Those numbers are frames of that flight and mean nothing on this
+  // cut; the same reading would have to be taken again to trim this one.
+  homestead: { '2026-09-10': [] },
+  // The cut opens on one black frame with only the outline drawn on it, and the page rests
+  // on the first frame shown, so it starts one in.
+  bayline: { '2026-09-10': [[1, 830]] },
 };
 
 // Where the plot is in each outlined photograph: the box around the editor's gold outline,

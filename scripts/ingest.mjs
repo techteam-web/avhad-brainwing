@@ -48,18 +48,23 @@ async function retouchedFiles() {
   return found;
 }
 
+// The orbits are the editor's cuts of the flights, with the plot outlined throughout, in
+// ~/Downloads/avhad-orbits. The raw flights they replaced are orbit_loop.mp4 beside the
+// Homestead stills and ~/Downloads/Avhad Bayline Residences Mahim.mp4.
+const ORBITS = '/Users/Arsalan/Downloads/avhad-orbits';
+
 const CAPTURES = [
   {
     slug: 'homestead',
     date: '2026-09-10',
     dir: '/Users/Arsalan/Downloads/Avhad Homestead mahim',
-    orbit: 'orbit_loop.mp4',
+    orbit: `${ORBITS}/homestade_orbit_edit.mp4`,
   },
   {
     slug: 'bayline',
     date: '2026-09-10',
     dir: '/Users/Arsalan/Downloads/Avhad Bayline Residences',
-    orbit: '/Users/Arsalan/Downloads/Avhad Bayline Residences Mahim.mp4',
+    orbit: `${ORBITS}/DJI_0051_Bayline Residences.mp4`,
   },
 ];
 
